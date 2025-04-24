@@ -92,9 +92,6 @@ const ProductDetailScreen: React.FC<ProductDetailScreenProps> = props => {
   };
 
   return (
-    <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={GlobalStyles.containerKey}>
     <WrapperContainer containerStyle={{paddingHorizontal: 0}}>
       <HeaderComponent
         rightPressActive={false}
@@ -111,7 +108,9 @@ const ProductDetailScreen: React.FC<ProductDetailScreenProps> = props => {
         item={props.route.params.item}
         dProps={props}
       />
-      
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={GlobalStyles.containerKey}>
         <ScrollView style={GlobalStyles.scrollView}>
           <View style={GlobalStyles.VStack}>
             {isAdmin ? null : (
@@ -153,9 +152,8 @@ const ProductDetailScreen: React.FC<ProductDetailScreenProps> = props => {
             <View style={styles.divider} />
           </View>
         </ScrollView>
-     
+      </KeyboardAvoidingView>
     </WrapperContainer>
-    </KeyboardAvoidingView>
   );
 };
 

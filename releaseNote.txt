@@ -13,3 +13,10 @@
 3.2025-04-24 11:28:31
      npx react-native run-ios
      npx react-native run-android
+
+4.iOS 디렉토리 클린업
+     cd ios
+     rm -rf Pods Podfile.lock build
+     pod deintegrate
+     pod install --repo-update
+
