@@ -1,0 +1,15 @@
+1. 2024-12-18 : 
+     npx react-native start --reset-cache
+
+2.2025-04-22 09:05:11
+     cd android
+     ./gradlew clean
+     ./gradlew installRelease
+     npx react-native start --experimental-debugger
+
+2.2025-04-23 13:34:05
+     npx react-native start --reset-cache
+
+3.2025-04-24 11:28:31
+     npx react-native run-ios
+     npx react-native run-android

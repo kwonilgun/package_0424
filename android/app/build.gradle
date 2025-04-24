@@ -83,7 +83,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.2"
     }
     signingConfigs {
         debug {
@@ -117,3 +117,10 @@ dependencies {
         implementation jscFlavor
     }
 }
+
+
+/**
+2024-12-17 : Bottom tab에 아이콘에 안나올 때 문제 해결 
+ */
+
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"

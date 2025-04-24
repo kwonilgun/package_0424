@@ -1,3 +1,13 @@
+
+#주요 assets사게
+assets/
+constants/
+#
+android/app/*.json
+ios/market_2024_12_13/GoogleService-Info.plist
+
+#ignore 
+
 # OSX
 #
 .DS_Store
@@ -33,13 +43,17 @@ local.properties
 .cxx/
 *.keystore
 !debug.keystore
-.kotlin/
-
 # node.js
+
 #
 node_modules/
 npm-debug.log
 yarn-error.log
+
+
+
+
+
 
 # fastlane
 #
@@ -73,3 +87,4 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+node_modules
