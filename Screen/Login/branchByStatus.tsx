@@ -65,7 +65,7 @@ export const branchByStatus = async (
     const params: IAuthInfo = {
       status: element.status,
       message: element.data.message,
-      nickName: element.data.nickName,
+      email: element.data.nickName,
       phoneNumber: element.data.phoneNumber,
     };
 
@@ -110,13 +110,13 @@ export const branchByStatus = async (
 
   function makeUserDataAndDispatch(decoded: UserFormInput) {
     const userData: UserFormInput = {
-      nickName: decoded.nickName,
+      email: decoded.email,
       phoneNumber: decoded.phoneNumber,
       userId: decoded.userId === null || undefined ? '' : decoded.userId,
       isAdmin: decoded.isAdmin,
     };
 
-    // console.log('branchByStatus/makeUserDataAndDispatch userData', userData);
+    console.log('branchByStatus/makeUserDataAndDispatch userData', userData);
 
     dispatch({type: 'LOGIN', payload: userData});
   }

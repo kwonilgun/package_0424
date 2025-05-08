@@ -67,7 +67,8 @@ export async function appleLogin() : Promise<{ success: boolean; data?: any; err
         throw new Error('Apple Sign-In failed - no identify token returned');
       }
 
-      console.log('identityToken, email', identityToken, email);
+      console.log('identityToken =', identityToken);
+      console.log('email =', email);
 
       // 백엔드로 토큰 전송
       const response: AxiosResponse = await axios.post(
@@ -157,7 +158,7 @@ export const loginBySns = (data: OAuthResponse , dispatch: React.Dispatch<AuthAc
   try {
     const decoded:UserFormInput = jwtDecode(data.token);
     const userData: UserFormInput = {
-          nickName: decoded.nickName,
+          email: decoded.email,
           phoneNumber: decoded.phoneNumber,
           userId: decoded.userId === null || undefined ? '' : decoded.userId,
           isAdmin: decoded.isAdmin,

@@ -511,7 +511,7 @@ const AddProductScreen: React.FC<AddProductScreenProps> = props => {
                         }}
                         name="description"
                         placeholder= "설명"
-                        keyboard="ascii-capable" // 숫자 판으로 변경
+                        keyboard="name-phone-pad" // 숫자 판으로 변경
                         isEditable={true}
                         multiline={true}
                         numberOfLines={50}

@@ -79,6 +79,7 @@ export const getInfoOfEmailFromDb = (
 
       // console.log('response = ', response);
       if (response && response.data) {
+        console.log('useLogin response.data = ', response.data);
         const login = {
           status: response.status,
           data: response.data,

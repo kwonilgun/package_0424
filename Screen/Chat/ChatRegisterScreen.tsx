@@ -94,7 +94,7 @@ const ChatRegisterScreen: React.FC<ChatRegisterScreenProps> = props => {
         'Content-Type': 'application/json; charset=utf-8',
         Authorization: `Bearer ${token}`,
       },
-      params: {email: state.user?.nickName},
+      params: {email: state.user?.email},
     };
     try {
       const response: AxiosResponse = await axios.get(

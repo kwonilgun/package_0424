@@ -129,6 +129,7 @@ const SystemInfoScreen: React.FC<SystemInfoScreenProps> = props => {
         };
         reset(userData);
         userOriginalInfo.current = userData;
+        console.log('SystemInfoScreen fetchUserProfile response.data', response.data);
         setUserProfile(response.data);
 
         // getUserProfile이 완료된 후에 checkOrderList 호출
@@ -268,7 +269,7 @@ const SystemInfoScreen: React.FC<SystemInfoScreenProps> = props => {
     //2023-02-16 : await 로 변경함. 그리고 에러 발생 처리
     try {
       const response: AxiosResponse = await axios.put(
-        `${baseURL}users/market/${decoded.userId}`,
+        `${baseURL}users/update/${decoded.userId}`,
         JSON.stringify(data),
         config,
       );

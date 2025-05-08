@@ -62,6 +62,8 @@ const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
       loginSetLanguage(language);
 
       GoogleSignin.configure({
+
+        // 2025-05-06 15:35:40, Google cloud에서 웹 애플리케이션을 지정해야 한다. 
             webClientId: GOOGLE_WEB_CLIENTID,
             // iosClientId: GOOGLE_IOS_CLIENT_ID,
             scopes: ['profile', 'email'],
@@ -278,7 +280,6 @@ const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
                   onPress={() => {
                     console.log(' 이메일 click');
                     navigation.navigate('EmailLoginScreen');
-                    
                     // displayNotificationNoParams();
                   }}>
                   <Text

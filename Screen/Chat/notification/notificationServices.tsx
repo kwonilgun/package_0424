@@ -43,33 +43,58 @@ export async function onDisplayAndroidNotification(
     }
 
     // 2025-03-04 13:45:51, messageData = {name:'kwonilgun', text:'hello'}로 구성이 되어 있다.
-    console.log('notificationServives - name', messageData.name);
-    await AsyncStorage.setItem('chatFromWho', messageData.name);
+    const { name } = extractName(messageData);
+    console.log('notificationServives - name', name);
 
-    // Create a channel (required for Android)
-    const channelId = await notifee.createChannel({
-      id: '1',
-      name: '패키지',
-      sound: 'default',
-      importance: AndroidImportance.HIGH,
-    });
+    try {
+      await AsyncStorage.setItem('chatFromWho', name!);
 
-    if (item.notification) {
-      await notifee.displayNotification({
-        title: item.notification?.title!.toString(),
-        body: item.notification?.body!,
-        android: {
-          channelId,
-          color: 'red',
-        },
+      // Create a channel (required for Android)
+      const channelId = await notifee.createChannel({
+        id: '1',
+        name: '패키지',
+        sound: 'default',
+        importance: AndroidImportance.HIGH,
       });
+
+      if (item.notification) {
+        await notifee.displayNotification({
+          title: item.notification?.title!.toString(),
+          body: item.notification?.body!.toString(),
+          android: {
+            channelId,
+            color: 'red',
+          },
+        });
+      }
+      
+    } catch (error) {
+      console.log('onAndoridDisplayNotification error', error);
     }
+    
 
 
   }
 }
 
+type MessageData = {
+  click_action: string;
+  title: string;
+  sound: string;
+  body: string; // JSON 문자열
+};
 
+function extractName(messageData: MessageData): { name?: string } {
+  try {
+    const bodyObj = JSON.parse(messageData.body);
+    const name = bodyObj.name;
+
+    return { name };
+  } catch (error) {
+    console.error('Failed to parse messageData.body:', error);
+    return {};
+  }
+}
 
 
 export async function onIosDisplayNotification(
@@ -92,19 +117,25 @@ export async function onIosDisplayNotification(
         messageData = dataString;
     }
 
+
     // 2025-03-04 13:45:51, messageData = {name:'kwonilgun', text:'hello'}로 구성이 되어 있다.
-    console.log('onIosDisplayNotification - name', messageData.name);
-    await AsyncStorage.setItem('chatFromWho', messageData.name);
+    const { name } = extractName(messageData);
+    console.log('onIosDisplayNotification - name', name);
+    try {
+      await AsyncStorage.setItem('chatFromWho', name!);
 
 
-    const title = item.notification?.title;
-    const contents = item.notification?.body;
-    console.log('notificationServices - ios - title ', title);
+      const title = item.notification?.title;
+      const contents = item.notification?.body;
+      console.log('notificationServices - ios - title ', title);
 
-    await notifee.displayNotification({
-        title: title,
-        body: contents,
-      });
+      await notifee.displayNotification({
+          title: title,
+          body: contents,
+        });
+    } catch (error) {
+      console.log('onIosDisplayNotification error', error);
+    }
 
 
   }

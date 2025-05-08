@@ -12,7 +12,10 @@
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		771E727722FB2BC42D070064 /* Pods_package_0424.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 21DBCBEF9DD9A4E0CFD39E0E /* Pods_package_0424.framework */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		CC5D69E12DC325BC002CE5DC /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CC5D69E02DC325BC002CE5DC /* GoogleService-Info.plist */; };
 		CC5FFD7B2DB9C82000C1F953 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = CC5FFD7A2DB9C82000C1F953 /* main.jsbundle */; };
+		CCE0E2712DC312A500D151AA /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = CCE0E2702DC312A500D151AA /* Algorithms */; };
+		CCE0E2732DC313B200D151AA /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = CCE0E2722DC313B200D151AA /* Algorithms */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,7 +28,9 @@
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = package_0424/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = package_0424/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B3F6ED8C0748465F9A95D981 /* Pods-package_0424.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-package_0424.release.xcconfig"; path = "Target Support Files/Pods-package_0424/Pods-package_0424.release.xcconfig"; sourceTree = "<group>"; };
+		CC5D69E02DC325BC002CE5DC /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		CC5FFD7A2DB9C82000C1F953 /* main.jsbundle */ = {isa = PBXFileReference; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
+		CCC8C5AC2DC586B200E2CEF7 /* package_0424.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = package_0424.entitlements; path = package_0424/package_0424.entitlements; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -34,6 +39,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CCE0E2732DC313B200D151AA /* Algorithms in Frameworks */,
+				CCE0E2712DC312A500D151AA /* Algorithms in Frameworks */,
 				771E727722FB2BC42D070064 /* Pods_package_0424.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -44,6 +51,7 @@
 		13B07FAE1A68108700A75B9A /* package_0424 */ = {
 			isa = PBXGroup;
 			children = (
+				CCC8C5AC2DC586B200E2CEF7 /* package_0424.entitlements */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				761780EC2CA45674006654EE /* AppDelegate.swift */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
@@ -72,6 +80,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				CC5D69E02DC325BC002CE5DC /* GoogleService-Info.plist */,
 				CC5FFD7A2DB9C82000C1F953 /* main.jsbundle */,
 				13B07FAE1A68108700A75B9A /* package_0424 */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -148,6 +157,9 @@
 				Base,
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
+			packageReferences = (
+				CCE0E26F2DC312A500D151AA /* XCRemoteSwiftPackageReference "swift-algorithms" */,
+			);
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -164,6 +176,7 @@
 			files = (
 				CC5FFD7B2DB9C82000C1F953 /* main.jsbundle in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				CC5D69E12DC325BC002CE5DC /* GoogleService-Info.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				435953A74B1DBF026D8F1043 /* PrivacyInfo.xcprivacy in Resources */,
 			);
@@ -277,6 +290,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = package_0424/package_0424.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Z8QC3ZG5CU;
 				ENABLE_BITCODE = NO;
@@ -294,6 +310,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = package_0424;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -306,6 +323,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = package_0424/package_0424.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Z8QC3ZG5CU;
 				INFOPLIST_FILE = package_0424/Info.plist;
@@ -322,6 +342,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = package_0424;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -523,6 +544,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		CCE0E26F2DC312A500D151AA /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-algorithms.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.2.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		CCE0E2702DC312A500D151AA /* Algorithms */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CCE0E26F2DC312A500D151AA /* XCRemoteSwiftPackageReference "swift-algorithms" */;
+			productName = Algorithms;
+		};
+		CCE0E2722DC313B200D151AA /* Algorithms */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CCE0E26F2DC312A500D151AA /* XCRemoteSwiftPackageReference "swift-algorithms" */;
+			productName = Algorithms;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 83CBB9F71A601CBA00E9B192 /* Project object */;
 }

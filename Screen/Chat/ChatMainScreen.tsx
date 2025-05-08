@@ -98,13 +98,12 @@ const ChatMainScreen: React.FC<ChatMainScreenProps> = props => {
         activateSocket();
       } else {
         console.log('ChatMainScreen: 이미 소켓이 있음');
-       
       }
 
       return () => {
         console.log('ChatMainScreen: useEffect : exit 한다.');
         // 2025-03-10 화면을 빠져 나가면 바로 해제를 한다. 
-        stopPingSend(socketState.socketId);
+        // stopPingSend(socketState.socketId);
         setLoading(true);
       };
     }, [socketState.socketId])
@@ -222,11 +221,11 @@ const ChatMainScreen: React.FC<ChatMainScreenProps> = props => {
         // console.log('Manager data = ', response.data);
         const chatUser = response.data.filter((item: IChatUserInfo) => {
           console.log('ChatMainScreen item.email = ', item.email);
-          if(state.user?.nickName?.includes('Manager')){
-            return item.email !== state.user?.nickName;
+          if(state.user?.email?.includes('Manager')){
+            return item.email !== state.user?.email;
           }
           else{
-            return item.email !== state.user?.nickName && item.email.includes('Manager');
+            return item.email !== state.user?.email && item.email.includes('Manager');
           }
 
         });
@@ -346,7 +345,7 @@ const ChatMainScreen: React.FC<ChatMainScreenProps> = props => {
     // 서버와의 연결 이벤트 처리
     socket.on('connect', () => {
       socketData.id = socket.id!; // 연결된 소켓 ID 할당
-      // console.log('Connected to server:', socketData);
+      console.log('Connected to server:', socketData);
     });
 
     // 2025-03-06 13:45:26, ping은 setInterval로 25초마다 한번씩 보내고, pong은 5초 안에 응답이 오도록 setTimeout() 을 적용을 했다.
@@ -370,7 +369,7 @@ const ChatMainScreen: React.FC<ChatMainScreenProps> = props => {
 
     // 2023-09-17 : pong을 받으면 세팅된 pongInterval.current에 해당되는 setTimeout을 해제한다. 10초 간의 모니터링을 통해서 연결이 살아있는 지 확인을 한다.
     socket.on('ping', res => {
-      // console.log(' ping을 받음 = ', res);
+      console.log(' ping을 받음 = ', res);
       if (!isEmpty(socketData.pingInterval)) {
         clearTimeout(socketData.pongInterval!);
         // socketData.pongInterval = null;
@@ -436,7 +435,7 @@ function handleSocketTimeout(socketData: ISocket) {
 
 
   const makeRoomId = (item: IChatUserInfo): string => {
-    return [state.user?.nickName!.split('@')[0], item.email!.split('@')[0]]
+    return [state.user?.email!.split('@')[0], item.email!.split('@')[0]]
       .sort()
       .join('-');
   };
@@ -458,7 +457,6 @@ function handleSocketTimeout(socketData: ISocket) {
       //2025-01-10 : 서버에서 저장된 메세지를 가져온다.
       fetchMessages(roomId);
 
-      
     } else {
       console.log('socketState.socketId is empty');
     }
@@ -537,7 +535,7 @@ function handleSocketTimeout(socketData: ISocket) {
         renderInputToolbar={renderInputToolbar}
         user={{
           _id: selectedUser?.userId!,
-          name: state.user?.nickName!.split('@')[0],
+          name: state.user?.email!.split('@')[0],
         }}
       />
     </ImageBackground>
@@ -602,7 +600,7 @@ function handleSocketTimeout(socketData: ISocket) {
           isStatic={true}
         />
         <Text style={{marginHorizontal: RFPercentage(1)}}>
-          {state.user?.nickName!.split('@')[0]}
+          {state.user?.email!.split('@')[0]}
         </Text>
       </View>
     );

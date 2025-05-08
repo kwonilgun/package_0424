@@ -40,7 +40,8 @@ import { errorAlert } from '../../utils/alerts/errorAlert';
 import { Expandable } from '../Orders/Expandable';
 import deleteOrder from '../Orders/deleteOrder';
 import { confirmAlert, ConfirmAlertParams } from '../../utils/alerts/confirmAlert';
-import { AsyncStorage } from 'react-native';
+// import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 // import { Badge } from 'react-native-elements';
@@ -125,20 +126,22 @@ const ProfileScreen: React.FC<ProfileScreenProps> = props => {
 
   const fetchChatUserInfo = async () => {
     const token = await getToken();
+    console.log('fetchChatUserInfo email = ', state.user?.userId);
     //헤드 정보를 만든다.
     const config = {
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
         Authorization: `Bearer ${token}`,
       },
-      params: {email: state.user?.nickName},
+      params: {userId: state.user?.userId},
     };
     try {
       const response: AxiosResponse = await axios.get(
-        `${baseURL}messages/user`,
+        `${baseURL}messages/chatUser`,
         config,
       );
       if (response.status === 200) {
+        console.log('ProfileScreen chatUser response.data', response.data);
         reset(response.data);
         setChatUser(response.data);
       } else {
@@ -220,13 +223,15 @@ const ProfileScreen: React.FC<ProfileScreenProps> = props => {
       func: async () => {
         const token = await getToken();
 
+        console.log('ProfileScreen deleteChatUserInfo = ', state.user?.userId);
+
         //헤드 정보를 만든다.
         const config = {
           headers: {
             'Content-Type': 'application/json; charset=utf-8',
             Authorization: `Bearer ${token}`,
           },
-          params: {email: state.user?.nickName},
+          params: {userId: state.user?.userId},
         };
         //2023-02-16 : await 로 변경함. 그리고 에러 발생 처리
         try {
@@ -533,8 +538,8 @@ const ProfileScreen: React.FC<ProfileScreenProps> = props => {
                                         const info: IChatUserInfo = {
                                           userId: state.user?.userId!,
                                           phone: state.user?.phoneNumber!,
-                                          nickName: state.user?.nickName!,
-                                          email: state.user?.nickName!,
+                                          nickName: state.user?.email!,
+                                          email: state.user?.email!,
                                           isManager: false,
                                           groupName: '',
                                           fcmToken: fcmToken!,

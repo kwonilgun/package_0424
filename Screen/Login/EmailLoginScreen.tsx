@@ -2,7 +2,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useContext, useCallback } from 'react';
+import React, { useState, useContext, useCallback, useEffect } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -41,10 +41,14 @@ import {
 // import {Checkbox} from 'react-native-paper';
 import GlobalStyles from '../../styles/GlobalStyles';
 import colors from '../../styles/colors';
+import { getToken } from '../../utils/getSaveToken';
+import { getPromiseFcmToken } from '../Chat/notification/services';
+import axios, { AxiosResponse } from 'axios';
+import { baseURL } from '../../assets/common/BaseUrl';
 
 const EmailLoginScreen: React.FC<EmailLoginScreenProps> = ({navigation}) => {
   // const [username, setUsername] = useState('');
-  const {dispatch} = useAuth();
+  const {state, dispatch} = useAuth();
 
   // 2024-05-26 : 자동 로그인 시에 로그인 화면 안 보이게 하기 위해서
   const [loading, setLoading] = useState(true);
@@ -81,6 +85,62 @@ const EmailLoginScreen: React.FC<EmailLoginScreenProps> = ({navigation}) => {
       };
     }, []),
   );
+
+  useEffect(() => {
+      console.log(
+        'EmailLogin.Screen : useEffect : isAuthenticated  = ',
+        state.isAuthenticated,
+      );
+      if (state.isAuthenticated) {
+        updateFcmTokenOnChatUser();
+        loginLocalSaveAndGoToProduct();
+      }
+    }, [state.isAuthenticated]);
+
+
+
+  const updateFcmTokenOnChatUser = async () => {
+    const userId = state.user?.userId;
+    try {
+      const token = await getToken();
+      const config = {
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const fcm = await getPromiseFcmToken();
+      console.log('EmailLogin.Screen - userId , fcm ', userId, fcm);
+      const params = {
+        userId: userId,
+        fcmToken: fcm,
+      };
+      const response: AxiosResponse = await axios.post(
+        `${baseURL}messages/fcm-update`,
+        JSON.stringify(params),
+        config,
+      );
+      console.log('EmailLogin.Screen - updateFcmTokenOnChatUser: ', response.data, response.status);
+      if(response.status === 200){
+        console.log('EmailLogin.Screen fcm update 성공 ');
+      }
+      else if(response.status === 201){
+        console.log('EmailLogin.Screen fcm 유지 성공 ');
+      }
+    } catch (error) {
+      console.log('EmailLogin.Screen updateFcmTokenOnChatUser error', error);
+    }
+
+  };
+
+    // 2024-05-26 : 자동 로그인을 위해서 추가,
+    const loginLocalSaveAndGoToProduct = async () => {
+
+      navigation.navigate('Home', {
+        screen: 'ProductMainScreen',
+      });
+  };
+
 
   const checkAutoLogin = async () => {
     try {

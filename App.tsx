@@ -98,15 +98,15 @@ const App: React.FC = () => {
   const requestIosUserPermission = async () => {
     try {
       const authStatus = await messaging().requestPermission();
-    console.log('IOS Authorization status: ', authStatus);
-    const enabled =
-      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+      console.log('IOS Authorization status: ', authStatus);
+      const enabled =
+        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-      console.log('IOS Authorization enabled: ', enabled);
-    if (enabled) {
-      getFcmToken();
-    }
+        console.log('IOS Authorization enabled: ', enabled);
+      if (enabled) {
+        getFcmToken();
+      }
     } catch (error) {
       console.error('request Ios user permisson 에러', error);
     }
@@ -165,7 +165,7 @@ const App: React.FC = () => {
       <LanguageProvider>
         <Provider store={store}>
           <NavigationContainer linking={linking}>
-            {/* <StartNotify /> */}
+            <StartNotify />
             <MainTab initialUrl={initialUrl} />
           </NavigationContainer>
         </Provider>

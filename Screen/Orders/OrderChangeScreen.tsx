@@ -68,7 +68,7 @@ const OrderChangeScreen: React.FC<OrderChangeScreenProps> = props => {
     ]);
 
   const isAdmin = state.user?.isAdmin;
-  console.log('OrderChangeScreen item = ', props.route.params?.item);
+  // console.log('OrderChangeScreen item = ', props.route.params?.item);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
 
@@ -80,6 +80,7 @@ const OrderChangeScreen: React.FC<OrderChangeScreenProps> = props => {
       handleSubmit,
       formState: {errors},
       trigger,
+      watch,
       reset,
     } = useForm<IOrderStatus>({
       defaultValues: {
@@ -112,7 +113,7 @@ const OrderChangeScreen: React.FC<OrderChangeScreenProps> = props => {
 
     try {
       const response: AxiosResponse = await axios.get(
-        `${baseURL}orders/orderItems/${orderItemNumber}`,
+        `${baseURL}orderSql/orderItems/${orderItemNumber}`,
         config,
       );
       if (response.status === 200) {
@@ -162,14 +163,15 @@ const OrderChangeScreen: React.FC<OrderChangeScreenProps> = props => {
   };
 
   const confirmUpload: SubmitHandler<IOrderStatus> = async data => {
-    console.log('업로드 order status = ', data);
+    console.log('업로드 order data = ', data);
 
     const param: ConfirmAlertParams = {
       title: strings.CONFIRMATION,
       message: '주문상태 변경',
       func: async (in_data: IOrderStatus) => {
-        console.log('주문상태 업로드 data = ', in_data);
-        const status: IOrderStatus = in_data;
+        console.log('주문상태 업로드 deliveryDate = ', in_data.deliveryDate?.toISOString());
+        console.log('주문상태 업로드 status = ', in_data.status);
+        const out_data: IOrderStatus = in_data;
 
         const token = await getToken();
         const config = {
@@ -178,10 +180,11 @@ const OrderChangeScreen: React.FC<OrderChangeScreenProps> = props => {
             Authorization: `Bearer ${token}`,
           },
         };
+        console.log('주문상태 업로드 status = ', in_data.status);
         try {
           const response: AxiosResponse = await axios.put(
             `${baseURL}orderSql/status/${item.id}`,
-            JSON.stringify(status),
+            JSON.stringify(out_data),
             config,
           );
           if (response.status === 200 || response.status === 201) {
@@ -212,12 +215,24 @@ const OrderChangeScreen: React.FC<OrderChangeScreenProps> = props => {
 
   const handleConfirm = (date: Date) => {
     setValue('deliveryDate', date);
+    console.log('handleConfirm date ', date.toISOString());
     console.log('OrderDetailScreen deliveryDate =', dateToKoreaDate(date) );
     hideDatePicker();
   };
 
-  const checkChangedValues  = () => {
-    return Number(props.route.params?.item.status) !== getValues('status') || props.route.params?.item.deliveryDate !== getValues('deliveryDate');
+  const checkChangedValues = () => {
+    // const originalDate = props.route.params?.item.deliveryDate
+    //   ? new Date(props.route.params.item.deliveryDate).getTime()
+    //   : null;
+    // const currentDate = getValues('deliveryDate')
+    //   ? new Date(getValues('deliveryDate')!).getTime()
+    //   : null;
+  
+    // return (
+    //   Number(props.route.params?.item.status) !== getValues('status') ||
+    //   originalDate !== currentDate
+    // );
+    return true;
   };
 
   
@@ -271,24 +286,26 @@ const OrderChangeScreen: React.FC<OrderChangeScreenProps> = props => {
                 <View style={{flex: 0.8}}>
                 <Text style={[GlobalStyles.inputTitle, {marginTop:RFPercentage(5)}]}>주문 상태 변경</Text>
                 <View style={styles.HCStack}>
-                  <DropDownPicker
-                    style={{backgroundColor: 'gainsboro'}}
-                    listMode="MODAL"
-                    open={openMethod}
-                    value={valueMethod}
-                    items={itemsMethod}
-                    setOpen={setOpenMethod}
-                    setValue={setValueMethod}
-                    setItems={setItemsMethod}
-                    onChangeValue={value => {
-                      console.log('act value', value);
-                      setValue('status', value);
-                    }} // 값이 바뀔 때마다 실행
-                    listItemContainerStyle={{
-                      margin: RFPercentage(2),
-                      backgroundColor: 'gainsboro',
-                    }}
-                  />
+                <DropDownPicker
+                      style={{backgroundColor: 'gainsboro'}}
+                      listMode="MODAL"
+                      open={openMethod}
+                      value={watch('status')}  // 여기서 react-hook-form과 직접 연결
+                      items={itemsMethod}
+                      setOpen={setOpenMethod}
+                      setValue={(callback) => {
+                        const value = typeof callback === 'function' ? callback(getValues('status')) : callback;
+                        setValue('status', value);
+                      }}
+                      setItems={setItemsMethod}
+                      onChangeValue={(value) => {
+                        setValue('status', value);
+                      }}
+                      listItemContainerStyle={{
+                        margin: RFPercentage(2),
+                        backgroundColor: 'gainsboro',
+                      }}
+                    />
                 </View>
 
                 <View style={styles.HCButton}>
@@ -333,7 +350,8 @@ const OrderChangeScreen: React.FC<OrderChangeScreenProps> = props => {
                               handleSubmit(confirmUpload)();
                             }
                             else{
-                              errorAlert('에러', '주문상태 변경 안됨');
+                              console.log('주문 상태 변경 안됨....')
+                              // errorAlert('에러', '주문상태 변경 안됨');
                             }
                           }
 
