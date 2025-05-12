@@ -169,7 +169,14 @@ const OrderChangeScreen: React.FC<OrderChangeScreenProps> = props => {
       title: strings.CONFIRMATION,
       message: '주문상태 변경',
       func: async (in_data: IOrderStatus) => {
-        console.log('주문상태 업로드 deliveryDate = ', in_data.deliveryDate?.toISOString());
+        if (in_data.deliveryDate) {
+          try {
+            const date = new Date(in_data.deliveryDate);
+            console.log('주문상태 업로드 deliveryDate = ', date.toISOString());
+          } catch (e) {
+            console.log('deliveryDate 변환 실패: ', e);
+          }
+        }
         console.log('주문상태 업로드 status = ', in_data.status);
         const out_data: IOrderStatus = in_data;
 
