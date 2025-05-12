@@ -43,7 +43,7 @@ export async function onDisplayAndroidNotification(
     }
 
     // 2025-03-04 13:45:51, messageData = {name:'kwonilgun', text:'hello'}로 구성이 되어 있다.
-    const { name } = extractName(messageData);
+    const { name} = messageData;
     console.log('notificationServives - name', name);
 
     try {
@@ -119,11 +119,15 @@ export async function onIosDisplayNotification(
 
 
     // 2025-03-04 13:45:51, messageData = {name:'kwonilgun', text:'hello'}로 구성이 되어 있다.
-    const { name } = extractName(messageData);
+    const { name } = messageData;
     console.log('onIosDisplayNotification - name', name);
     try {
-      await AsyncStorage.setItem('chatFromWho', name!);
-
+      if (messageData.name) {
+        await AsyncStorage.setItem('chatFromWho', messageData.name);
+      }
+      else{
+        console.error('messageData.name = ', messageData.name);
+      }
 
       const title = item.notification?.title;
       const contents = item.notification?.body;

@@ -201,7 +201,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = props => {
   };
 
   const uploadChatUserInfo = () => {
-    console.log('채팅 사용자 정보 업로드');
+    console.log('Profile screen 채팅 사용자 정보 업로드');
     if (!isVacancy()) {
       console.log('데이타가 변경되었습니다. ');
       //  const currentValues = getValues();

@@ -369,7 +369,7 @@ const ChatMainScreen: React.FC<ChatMainScreenProps> = props => {
 
     // 2023-09-17 : pong을 받으면 세팅된 pongInterval.current에 해당되는 setTimeout을 해제한다. 10초 간의 모니터링을 통해서 연결이 살아있는 지 확인을 한다.
     socket.on('ping', res => {
-      console.log(' ping을 받음 = ', res);
+      // console.log(' ping을 받음 = ', res);
       if (!isEmpty(socketData.pingInterval)) {
         clearTimeout(socketData.pongInterval!);
         // socketData.pongInterval = null;
@@ -415,22 +415,22 @@ let retryCount = 0; // 재시도 횟수
 
 function handleSocketTimeout(socketData: ISocket) {
   console.log('ChatMainScreen - 소켓 타임아웃 발생, 재연결 시도...');
-  // retryCount++;
+  retryCount++;
 
-  // if (retryCount <= 1) { // 최대 3번 재시도
-  //   console.log(`ChatMainScreen - 재시도 ${retryCount}번째...`);
-  //   stopPingSend(socketData.socketId);
-  //   alertMsg('에러', '채팅 연결 실패, 다시 시도 해주세요');
-  //   // socketData.socketId.disconnect(); // 기존 소켓 연결 종료
+  if (retryCount <= 1) { // 최대 3번 재시도
+    console.log(`ChatMainScreen - 재시도 ${retryCount}번째...`);
+    stopPingSend(socketData.socketId);
+    alertMsg('에러', '채팅 연결 실패, 다시 시도 해주세요');
+    // socketData.socketId.disconnect(); // 기존 소켓 연결 종료
 
-  //   // setTimeout(activateSocket, 2000 * retryCount); // 지수 백오프 적용
-  // } else {
-  //   console.log('ChatMainScreen - 재시도 실패, 사용자에게 알림');
-  //   alertMsg('에러', '채팅 연결 시도 실패');
-  //   stopPingSend(socketData.socketId);
-  //   // 사용자에게 네트워크 문제 알림 또는 로그아웃 처리
-  //   // retryCount = 0; // 재시도 횟수 초기화ㅁ
-  // }
+    // setTimeout(activateSocket, 2000 * retryCount); // 지수 백오프 적용
+  } else {
+    console.log('ChatMainScreen - 재시도 실패, 사용자에게 알림');
+    alertMsg('에러', '채팅 연결 시도 실패');
+    stopPingSend(socketData.socketId);
+    // 사용자에게 네트워크 문제 알림 또는 로그아웃 처리
+    // retryCount = 0; // 재시도 횟수 초기화ㅁ
+  }
 }
 
 
@@ -486,7 +486,9 @@ function handleSocketTimeout(socketData: ISocket) {
         keyExtractor={item => item.email}
         renderItem={({item}) => {
           const userName = item.email.split('@')[0];
-          const showBadge = userName === sentName && badge > 0;
+          console.log('renderUserList userName, sentName', userName, sentName );
+          // const showBadge = userName === sentName && badge > 0;
+          const showBadge =  badge > 0;
           console.log('renderUserList userName, sentName, showBadge', userName, sentName, showBadge);
           return (
             <TouchableOpacity
