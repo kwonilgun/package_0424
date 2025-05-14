@@ -20,3 +20,6 @@
      pod deintegrate
      pod install --repo-update
 
+5. 2025-05-13 version 1.0.4
+     .채팅 push 알림 수정 
+

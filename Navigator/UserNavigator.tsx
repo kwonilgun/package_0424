@@ -17,7 +17,7 @@ import OrderListScreen from '../Screen/Orders/OrderListScreen';
 import OrderDetailScreen from '../Screen/Orders/OrderDetailScreen';
 import ChatMainScreen from '../Screen/Chat/ChatMainScreen';
 import ChatRegisterScreen from '../Screen/Chat/ChatRegisterScreen';
-import NaverLoginScreen from '../Screen/Login/NaverLoginScreen';
+// import NaverLoginScreen from '../Screen/Login/NaverLoginScreen';
 import OrderHistoryScreen from '../Screen/Orders/OrderHistoryScreen';
 import EmailLoginScreen from '../Screen/Login/EmailLoginScreen';
 
@@ -118,7 +118,7 @@ function MyStack() {
         />
       )}
 
-      {state.isAuthenticated ? null : (
+      {/* {state.isAuthenticated ? null : (
         <Stack.Screen
           name="NaverLoginScreen"
           component={NaverLoginScreen}
@@ -131,7 +131,7 @@ function MyStack() {
             // ),
           })}
         />
-      )}
+      )} */}
 
       {state.isAuthenticated ? null : (
         <Stack.Screen
