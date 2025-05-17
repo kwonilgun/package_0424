@@ -294,7 +294,6 @@ const fetchSalesData = async (itemValue: string) => {
 
 
           <View style={{marginTop:RFPercentage(3)}} >
-                    {/* react-native-svg-charts의 LineChart 컴포넌트를 사용하여 차트를 렌더링합니다. */}
                     <LineChart
                       data={chartData}
                       width={Dimensions.get('window').width - RFPercentage(10)} // Adjust width as needed

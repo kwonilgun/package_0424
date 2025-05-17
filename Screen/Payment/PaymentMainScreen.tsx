@@ -8,6 +8,7 @@ import {
   Platform,
   StyleSheet,
   Text,
+  ScrollView,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -23,7 +24,7 @@ import { connect } from 'react-redux';
 import { IDeliveryInfo } from '../model/interface/IDeliveryInfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import isEmpty from '../../utils/isEmpty';
-import { ScrollView } from 'react-native-gesture-handler';
+// import { ScrollView } from 'react-native-gesture-handler';
 import { returnDashNumber } from '../../utils/insertDashNumber';
 import deliveries from '../../assets/json/deliveries.json';
 import { width } from '../../styles/responsiveSize';

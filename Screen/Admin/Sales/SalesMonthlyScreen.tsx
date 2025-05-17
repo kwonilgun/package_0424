@@ -26,7 +26,7 @@ import { SalesChartScreenProps, SalesMonthlyScreenProps } from '../../model/type
 import { alertMsg } from '../../../utils/alerts/alertMsg';
 import strings from '../../../constants/lang';
 import moment from 'moment';
-import { ScrollView } from 'react-native-gesture-handler';
+// import { ScrollView } from 'react-native-gesture-handler';
 import { styles } from './ProfitMonthlyScreen';
 
 
@@ -135,7 +135,6 @@ const SalesMonthlyScreen: React.FC<SalesMonthlyScreenProps> = props => {
         </>
       ) : (
         <View style={styles.barContainer} >
-          {/* react-native-svg-charts의 LineChart 컴포넌트를 사용하여 차트를 렌더링합니다. */}
           
           <BarChart
               data={salesData.map((item, index) => ({

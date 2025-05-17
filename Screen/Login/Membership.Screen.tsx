@@ -19,6 +19,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   StatusBar,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -51,7 +52,7 @@ import {
 import CheckBox from '@react-native-community/checkbox';
 import {LanguageContext} from '../../context/store/LanguageContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {ScrollView} from 'react-native-gesture-handler';
+// import {ScrollView} from 'react-native-gesture-handler';
 import InputField from '../../utils/InputField';
 import GlobalStyles from '../../styles/GlobalStyles';
 

@@ -487,8 +487,8 @@ function handleSocketTimeout(socketData: ISocket) {
         renderItem={({item}) => {
           const userName = item.email.split('@')[0];
           console.log('renderUserList userName, sentName', userName, sentName );
-          // const showBadge = userName === sentName && badge > 0;
-          const showBadge =  badge > 0;
+          const showBadge = userName === sentName && badge > 0;
+          // const showBadge =  badge > 0;
           console.log('renderUserList userName, sentName, showBadge', userName, sentName, showBadge);
           return (
             <TouchableOpacity

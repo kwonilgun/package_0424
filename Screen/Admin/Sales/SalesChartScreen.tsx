@@ -146,7 +146,6 @@ const SalesChartScreen: React.FC<SalesChartScreenProps> = props => {
       ) : (
          <ScrollView >
             <View style={{marginTop:RFPercentage(5), marginHorizontal:RFPercentage(0.5), alignSelf:'center'}} >
-                      {/* react-native-svg-charts의 LineChart 컴포넌트를 사용하여 차트를 렌더링합니다. */}
                       <LineChart
                         data={chartData}
                         width={Dimensions.get('window').width - RFPercentage(10)} // Adjust width as needed

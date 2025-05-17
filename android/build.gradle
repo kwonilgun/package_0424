@@ -6,6 +6,9 @@ buildscript {
         targetSdkVersion = 35
         ndkVersion = "27.1.12297006"
         kotlinVersion = "2.0.21"
+        agp_version = '8.8.2'
+        agp_version1 = '8.8.0'
+        agp_version2 = '8.10.0'
     }
     repositories {
         google()
@@ -16,7 +19,7 @@ buildscript {
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
         classpath ("com.google.gms:google-services:4.4.2")
-        classpath 'com.android.tools.build:gradle:8.10.0' // 버전 변경
+        classpath "com.android.tools.build:gradle:$agp_version2" // 버전 변경
 
 
     }
