@@ -273,6 +273,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = props => {
       );
 
       const orders = response.data as IOrderInfo[];
+      console.log('ProfileScreen orders ', orders);
 
       if (orders.length) {
         // 2023-05-20 : Date를 new를 통해서 값으로 변환해야 소팅이 동작이 된다. 아니면 NaN이 리턴이 된다.

@@ -7,6 +7,8 @@ import EditProductScreen from '../../Screen/Admin/EditProductScreen';
 import AddProductScreen from '../../Screen/Admin/AddProductScreen';
 import EditProducerScreen from '../../Screen/Admin/EditProducerScreen';
 import AddProducerScreen from '../../Screen/Admin/AddProducerScreen';
+import AddLastOrderScreen from '../../Screen/Admin/AddLastOrderScreen';
+import EditLastOrderScreen from '../../Screen/Admin/EditLastOrderScreen';
 
 // 2024-02-14 : 버그 Fix, RootStackParamList 를 추가함. 타입을 지정
 const Stack = createStackNavigator<EditStackParamList>();
@@ -59,6 +61,15 @@ function MyStack() {
             })}
           />
 
+          <Stack.Screen
+            name="EditLastOrderScreen"
+            component={EditLastOrderScreen}
+            options={({navigation, route}) => ({
+              headerShown: false,
+              headerLeft: () => null,
+              title: '상품편집',
+            })}
+          />
 
           <Stack.Screen
             name="AddProductScreen"
@@ -73,6 +84,16 @@ function MyStack() {
           <Stack.Screen
             name="AddProducerScreen"
             component={AddProducerScreen}
+            options={({navigation, route}) => ({
+              headerShown: false,
+              headerLeft: () => null,
+              title: '상품추가',
+            })}
+          />
+
+          <Stack.Screen
+            name="AddLastOrderScreen"
+            component={AddLastOrderScreen}
             options={({navigation, route}) => ({
               headerShown: false,
               headerLeft: () => null,

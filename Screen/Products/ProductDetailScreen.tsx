@@ -3,6 +3,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React, {useCallback, useRef, useState} from 'react';
 import {
+  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -66,12 +67,16 @@ const ProductDetailScreen: React.FC<ProductDetailScreenProps> = props => {
   const onOpen = () => {
     console.log('SingleProduct.tsx : onOpen');
     try {
-      modalRef.current?.open();
-    } catch (error) {
-      console.error(error);
-    } finally {
-      console.log('SingleProduct.tsx: modal final.....>>>>>');
+    if (!item || Number(item.stock) <= 0) {
+      Alert.alert('재고 없음', '이 상품은 현재 재고가 없습니다.');
+      return;
     }
+    modalRef.current?.open();
+  } catch (error) {
+    console.error(error);
+  } finally {
+    console.log('SingleProduct.tsx: modal final.....>>>>>');
+  }
   };
   const onPressLeft = () => {
     props.navigation.navigate('Home', {screen: 'ProductMainScreen'});
@@ -122,7 +127,7 @@ const ProductDetailScreen: React.FC<ProductDetailScreenProps> = props => {
                   }}>
                   <View style={GlobalStyles.buttonSmall}>
                     <Text style={GlobalStyles.buttonTextStyle}>
-                      {strings.BUY}
+                      구매하기
                     </Text>
                   </View>
                 </TouchableOpacity>

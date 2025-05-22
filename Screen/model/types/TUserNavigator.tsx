@@ -65,6 +65,7 @@ export type RootStackParamList = {
     actionFt: (id: string, props: any) => void;
     orders: DataList;
   };
+  OrderTotalChangeScreen: undefined;
   ChatMainScreen: undefined;
   ChatRegisterScreen: undefined;
 };
@@ -135,10 +136,6 @@ export type MembershipScreenProps = {
   route: RouteProp<RootStackParamList, 'MembershipScreen'>;
 };
 
-// export type NaverLoginScreenProps = {
-//   route: RouteProp<RootStackParamList, 'NaverLoginScreen'>;
-// };
-
 export type ProfileScreenProps = {
   route: RouteProp<RootStackParamList, 'ProfileScreen'>;
   navigation: StackNavigationProp<RootStackParamList, 'ProfileScreen'>;
@@ -167,6 +164,13 @@ export type OrderChangeScreenProps = {
   route: RouteProp<RootStackParamList, 'OrderChangeScreen'>;
   navigation: StackNavigationProp<RootStackParamList, 'OrderChangeScreen'>;
 };
+
+export type OrderTotalChangeScreenProps = {
+  // items: DataList | null;
+  route: RouteProp<RootStackParamList, 'OrderTotalChangeScreen'>;
+  navigation: StackNavigationProp<RootStackParamList, 'OrderTotalChangeScreen'>;
+};
+
 
 
 export type ProductMainScreenProps = {

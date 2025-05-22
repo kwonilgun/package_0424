@@ -50,23 +50,23 @@ const BottomSheet: React.FC<Props> = props => {
     props.addItemToCart(number, item);
     //2025-04-09 15:45:22 - 재고 숫자를 감축해야 한다.
     try {
-      const token = await getToken();
-      const config = {
-        headers: {
-          'Content-Type': 'application/json; charset=utf-8',
-          Authorization: `Bearer ${token}`,
-        },
-      };
-      const data = {
-        productId : item.id,
-        quantity: number,
-      };
+      // const token = await getToken();
+      // const config = {
+      //   headers: {
+      //     'Content-Type': 'application/json; charset=utf-8',
+      //     Authorization: `Bearer ${token}`,
+      //   },
+      // };
+      // const data = {
+      //   productId : item.id,
+      //   quantity: number,
+      // };
 
-      const response: AxiosResponse =  await axios.post(
-        `${baseURL}stock/decrease`,
-        JSON.stringify(data),
-        config,
-      );
+      // const response: AxiosResponse =  await axios.post(
+      //   `${baseURL}stock/decrease`,
+      //   JSON.stringify(data),
+      //   config,
+      // );
 
       // console.log('putInShopping cart response ', response);
       dProps.navigation.navigate('ShoppingCart', {screen: 'CartMainMenu'});

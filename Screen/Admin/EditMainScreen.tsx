@@ -25,12 +25,19 @@ import { alertMsg } from '../../utils/alerts/alertMsg';
 import GlobalStyles from '../../styles/GlobalStyles';
 import { IProducerInfo } from '../model/interface/IAuthInfo';
 import { ISProduct } from './AddProductScreen';
+import { dateToKoreaDate } from '../../utils/time/dateToKoreaTime';
+
+export interface ILastOrderInfo {
+  id: string;
+  date: Date | null;
+}
 
 const EditMainScreen: React.FC<EditMainScreenProps> = props => {
   const [loading, setLoading] = useState<boolean>(true);
 
     const [productList, setProductList] = useState<ISProduct[] | null>(null);
     const [producerList, setProducerList] = useState<IProducerInfo[] | null>(null);
+    const [lastOrderList, setLastOrderList] = useState<ILastOrderInfo[] | null>(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -38,6 +45,7 @@ const EditMainScreen: React.FC<EditMainScreenProps> = props => {
       setLoading(true);
       fetchProductList();
       fetchProducerList();
+      fetchLastOrderList();
 
       return () => {
         setLoading(true);
@@ -103,6 +111,38 @@ const EditMainScreen: React.FC<EditMainScreenProps> = props => {
     }
   };
 
+  // 2025-03-18 11:17:58, 생산자 정보를 읽어온다. 
+  const fetchLastOrderList = async () => {
+    try {
+      const token = await getToken();
+      //헤드 정보를 만든다.
+      const config = {
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const response: AxiosResponse = await axios.get(
+        `${baseURL}orderSql/lastOrder`,
+        config,
+      );
+      if (response.status === 200) {
+        console.log('last order  = ', response.data);
+        // const lastOrderDate = new Date(response.data.date)
+        //   .toISOString()
+        //   .slice(0, 19)
+        //   .replace('T', ' ');
+        const lastOrder = response.data as ILastOrderInfo[];
+        setLastOrderList(lastOrder);
+      }
+    } catch (error) {
+      console.log('라스트 오 리스트 없음');
+      // alertMsg(strings.ERROR, '상품 리스트 없음');
+    } finally{
+      setLoading(false);
+    }
+  };
+
   const startEdit = (product: ISProduct) =>{
     console.log('start edit item ', product);
     props.navigation.navigate('EditProductScreen',{item:product});
@@ -131,6 +171,23 @@ const EditMainScreen: React.FC<EditMainScreenProps> = props => {
         onPress={async () => {
           console.log('EditMainScreen: renderAdddProduct. ');
           props.navigation.navigate('AddProducerScreen');
+        }}>
+        <View style={GlobalStyles.buttonSmall}>
+          <Text style={{fontSize: RFPercentage(3)}}> + </Text>
+        </View>
+      </TouchableOpacity>
+    </View>
+  </View>
+  );
+
+
+  const renderAddLastOrder = () => (
+    <View style={{alignItems: 'center', marginTop: 10}}>
+    <View style={{margin: RFPercentage(2), alignItems: 'flex-end'}}>
+      <TouchableOpacity
+        onPress={async () => {
+          console.log('EditMainScreen: renderAddLastOrder. ');
+          props.navigation.navigate('AddLastOrderScreen');
         }}>
         <View style={GlobalStyles.buttonSmall}>
           <Text style={{fontSize: RFPercentage(3)}}> + </Text>
@@ -192,6 +249,34 @@ const EditMainScreen: React.FC<EditMainScreenProps> = props => {
 
  );
 
+
+  const renderLastOrder =  () => (
+    <View style={styles.productListContainer}>
+         <Text style={styles.title}>주문 마감</Text>
+         <FlatList
+           data={lastOrderList}
+           keyExtractor={item => item.id}
+           renderItem={({item}) => (
+             <TouchableOpacity
+               style={styles.productItem}
+               onPress={() => {
+                console.log('EditMainScreen go to EditLastOrderScreen');
+                props.navigation.navigate('EditLastOrderScreen',{item:item});
+                //  startEdit(item);
+               }} // Navigate to chat when a user is selected
+             >
+               <Text style={styles.productName}>{dateToKoreaDate(new Date(item.date!))}</Text>
+             </TouchableOpacity>
+           )}
+           ListHeaderComponent={lastOrderList?.length === 0 ? renderAddLastOrder : null}
+           ListEmptyComponent={
+             <Text style={styles.emptyMessage}> 리스트 없음.</Text>
+           }
+         />
+    </View>
+
+ );
+
   const onPressRight = () => {
       console.log('Profile.tsx onPressRight...');
     //   props.navigation.navigate('SystemInfoScreen');
@@ -218,6 +303,7 @@ const EditMainScreen: React.FC<EditMainScreenProps> = props => {
           <>
             {renderProductList()}
             {renderProducerList()}
+            {renderLastOrder()}
           </>
         }
         data={[]} // 빈 데이터 배열

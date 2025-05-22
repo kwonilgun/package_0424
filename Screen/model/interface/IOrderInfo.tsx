@@ -12,7 +12,7 @@ export interface IOrderInfo {
   deliveryDate:Date;
 
   isPaid: boolean;
-  orderItems: CartItem;
+  orderItems: string[];
   orderNumber: string;
   orderPrice: number;
   producerName: string;

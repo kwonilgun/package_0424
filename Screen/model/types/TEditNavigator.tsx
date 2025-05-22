@@ -6,19 +6,21 @@
  * Copyright <<projectCreationYear>> - 2024 루트원 AI, 루트원 AI
  */
 
-import {StackNavigationProp} from '@react-navigation/stack';
-import { IProduct } from '../interface/IProductInfo';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 import { IProducerInfo } from '../interface/IAuthInfo';
 import { ISProduct } from '../../Admin/AddProductScreen';
+import { ILastOrderInfo } from '../../Admin/EditMainScreen';
 
 export type EditStackParamList = {
   EditManager: {screen: 'EditMainScreen'};
   EditMainScreen: undefined;
   EditProductScreen: {item: ISProduct}
   EditProducerScreen: {item: IProducerInfo}
+  EditLastOrderScreen: {item: ILastOrderInfo}
   AddProductScreen: undefined;
   AddProducerScreen: undefined;
+  AddLastOrderScreen: undefined;
 };
 
 export type EditMainScreenProps = {
@@ -34,10 +36,19 @@ export type EditProducerScreenProps = {
   navigation: StackNavigationProp<EditStackParamList, 'EditProducerScreen'>;
 };
 
+export type EditLastOrderScreenProps = {
+  route: RouteProp<EditStackParamList, 'EditLastOrderScreen'>;
+  navigation: StackNavigationProp<EditStackParamList, 'EditLastOrderScreen'>;
+};
+
 export type AddProductScreenProps = {
   navigation: StackNavigationProp<EditStackParamList, 'AddProductScreen'>;
 };
 
 export type AddProducerScreenProps = {
   navigation: StackNavigationProp<EditStackParamList, 'AddProducerScreen'>;
+};
+
+export type AddLastOrderScreenProps = {
+  navigation: StackNavigationProp<EditStackParamList, 'AddLastOrderScreen'>;
 };

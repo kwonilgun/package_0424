@@ -19,9 +19,7 @@ import React, { useCallback, useRef, useState } from 'react';
 import {
   FlatList,
   KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
+  Platform, StyleSheet,
   Text, TouchableOpacity,
   View
 } from 'react-native';
@@ -32,19 +30,15 @@ import HeaderComponent from '../../utils/basicForm/HeaderComponents';
 import { useAuth } from '../../context/store/Context.Manager';
 import { useFocusEffect } from '@react-navigation/native';
 import LoadingWheel from '../../utils/loading/LoadingWheel';
-import { COMPANY_INFO_ID, height } from '../../assets/common/BaseValue';
-import GlobalStyles from '../../styles/GlobalStyles';
 import axios, { AxiosResponse } from 'axios';
 import { baseURL } from '../../assets/common/BaseUrl';
 import { getToken } from '../../utils/getSaveToken';
-import { IProduct } from '../model/interface/IProductInfo';
 import { ICompany } from '../model/interface/ICompany';
-import ProductList from './ProductList';
 import strings from '../../constants/lang';
 import { ISProduct } from '../Admin/AddProductScreen';
 import { alertMsg } from '../../utils/alerts/alertMsg';
 import colors from '../../styles/colors';
-import ProductCard from './ProductCard';
+import { ILastOrderInfo } from '../Admin/EditMainScreen';
 
 interface IPackagedProducts {
   [packageName: string]: ISProduct[];
@@ -61,6 +55,7 @@ const ProductMainScreen: React.FC<ProductMainScreenProps> = props => {
 
   const [companyInform, setCompanyInform] = useState<ICompany | null>(null);
   const [productNames, setProductNames] = useState<string[] | null>(null);
+  const [lastOrderList, setLastOrderList] = useState<ILastOrderInfo[] | null>(null);
 
 
   const initialState = useRef<ISProduct[]>([]);
@@ -78,13 +73,46 @@ const ProductMainScreen: React.FC<ProductMainScreenProps> = props => {
       // }
       fetchProductList();
 
+      fetchOrderDeadline(); // 🔽 마감 날짜 가져오기 호출
+
+
       return () => {
         // console.log('ProductMainScreen useFocusEffect 나감');
         setProductList([]);
         setLoading(true);
+        setLastOrderList(null); // 클린업
+
       };
     }, []),
   );
+
+  // 2025-03-18 11:17:58, 생산자 정보를 읽어온다. 
+  const fetchOrderDeadline = async () => {
+    try {
+      const token = await getToken();
+      //헤드 정보를 만든다.
+      const config = {
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const response: AxiosResponse = await axios.get(
+        `${baseURL}orderSql/lastOrder`,
+        config,
+      );
+      if (response.status === 200) {
+        console.log('last order  = ', response.data);
+        const lastOrder = response.data as ILastOrderInfo[];
+        setLastOrderList(lastOrder);
+      }
+    } catch (error) {
+      console.log('라스트 오 리스트 없음');
+      // alertMsg(strings.ERROR, '상품 리스트 없음');
+    } finally{
+      setLoading(false);
+    }
+  };
 
    // 2025-01-28: 상품정보를 읽어온다.
    const fetchProductList = async () => {
@@ -213,11 +241,11 @@ const ProductMainScreen: React.FC<ProductMainScreenProps> = props => {
         >
           <View style={{flex:1, flexDirection:'row', alignItems:'center'}}>
               <Text style={[styles.headerText, {width:RFPercentage(20),  marginLeft: RFPercentage(2)}]}>{item.name}</Text>
-              <Text style={[styles.headerText, {width:RFPercentage(10)  }]}>{item.unitDesc}</Text>
+              <Text style={[styles.headerText, {width:RFPercentage(5)  }]}>{item.unitDesc}</Text>
               <Text style={[styles.headerText, {width:RFPercentage(10) }]}>{item.price.toString().split('.')[0]}원</Text>
+              <Text style={[styles.headerText, {width:RFPercentage(10) }]}>{item.stock.toString()}개</Text>
           </View>
-          
-          
+
         </TouchableOpacity>
       ))}
     </View>
@@ -238,6 +266,26 @@ const ProductMainScreen: React.FC<ProductMainScreenProps> = props => {
           renderItem={() => null} // 빈 렌더링 함수
         />
   );
+
+  const renderOrderDeadline = () => {
+      if (!lastOrderList?.length) {return null;}
+
+      const formattedDate = new Date(lastOrderList[0].date!).toLocaleString('ko-KR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        // weekday: 'short',
+        // hour: '2-digit',
+        // minute: '2-digit',
+      });
+
+      return (
+        <View style={styles.deadlineContainer}>
+          <Text style={styles.deadlineText}>📌 주문 마감일: {formattedDate}</Text>
+        </View>
+      );
+};
+
 
   return (
     <WrapperContainer containerStyle={{paddingHorizontal: 0}}>
@@ -264,7 +312,10 @@ const ProductMainScreen: React.FC<ProductMainScreenProps> = props => {
           {loading ? (
               <LoadingWheel />
               ) : (
-              renderLists()
+                <>
+              {renderLists()}
+              {renderOrderDeadline()}
+              </>
           )}
 
           {/* 최상위 Layer에서 LoadingWheel 표시 */}
@@ -281,12 +332,26 @@ const ProductMainScreen: React.FC<ProductMainScreenProps> = props => {
 };
 
 const styles = StyleSheet.create({
+  deadlineContainer: {
+  padding: 10,
+  backgroundColor: '#fce4ec',
+  borderRadius: 8,
+  marginHorizontal: 15,
+  marginBottom: 20,
+  },
+  deadlineText: {
+    color: '#d81b60',
+    fontWeight: 'bold',
+    fontSize: RFPercentage(2),
+    textAlign: 'center',
+  },
 
   headerText: {
     // flex: 1, // 동일한 비율 유지
     fontSize: RFPercentage(2),
-    color: 'black',
+    // color: 'black',
     // fontWeight: 'bold',
+    // borderBottomWidth: 1,
     textAlign: 'center',
   },
 
@@ -336,7 +401,7 @@ const styles = StyleSheet.create({
       // padding: RFPercentage(1),
       // marginHorizontal: RFPercentage(3),
       marginBottom: 5,
-      backgroundColor: colors.grey,
+      // backgroundColor: colors.grey,
       borderRadius: 5,
       borderWidth: 1,
       borderColor: colors.grey,

@@ -1,11 +1,11 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState, useCallback} from 'react';
-import {useFocusEffect} from '@react-navigation/native';
-import {View, TouchableOpacity, Text, StyleSheet, ScrollView} from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import { View, TouchableOpacity, Text, StyleSheet, ScrollView } from 'react-native';
 
 import isEmpty from '../../utils/isEmpty';
-import {dateToKoreaDate, dateToKoreaTime} from '../../utils/time/dateToKoreaTime';
-import {DataList, DataListItem} from './makeExpandable';
+import { dateToKoreaDate } from '../../utils/time/dateToKoreaTime';
+import { DataList, DataListItem } from './makeExpandable';
 import { RFPercentage } from 'react-native-responsive-fontsize';
 
 interface ExpandableProps {

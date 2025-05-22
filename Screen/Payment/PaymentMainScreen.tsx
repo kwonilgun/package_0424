@@ -133,100 +133,160 @@ const PaymentMainScreen: React.FC<PaymentMainScreenProps> = props => {
     return randomNum;
   };
 
-  const finishOrder = async (item: CartItem) => {
-    console.log('finishOrder item  = ', item);
+  // const finishOrder = async (item: CartItem) => {
+  //   console.log('finishOrder item  = ', item);
 
-    const m_uid: string = generateOrderNumber();
-    const cartArray: CartItem[] = [item];
-    const param: ConfirmAlertParams = {
-      title: '송금을 완료하셨습니까?',
-      message: '주문이 접수됩니다.  온라인 계좌로 송금을 해 주세요',
-      func: async (cartArray: CartItem[]) => {
-        const orderLists = Promise.all(
-          deliveryList.map(async element => {
-            const order = {
-              ...element,
-              orderItems: cartArray,
-              orderNumber: m_uid,
-              isPaid: false,
-              user: state.user?.userId,
-              buyerName: buyer?.nickName,
-              buyerPhone: buyer?.phone,
-              status: PAYMENT_COMPLETE,
-              // dateOrdered: moment().format(),
-              dateOrdered: new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().split('.')[0],
-              // 2025-03-02 10:24:49: deliveryDate 추가, deliveryDate 초기화는 '' empty string으로 초기화 한다.
-              deliveryDate: null,
+  //   const m_uid: string = generateOrderNumber();
+  //   const cartArray: CartItem[] = [item];
+  //   const param: ConfirmAlertParams = {
+  //     title: '구매을 하셨습니다?',
+  //     message: '주문이 접수됩니다.  온라인 계좌로 송금을 해 주세요',
+  //     func: async (cartArray: CartItem[]) => {
+  //       const orderLists = Promise.all(
+  //         deliveryList.map(async element => {
+  //           const order = {
+  //             ...element,
+  //             orderItems: cartArray,
+  //             orderNumber: m_uid,
+  //             isPaid: false,
+  //             user: state.user?.userId,
+  //             buyerName: buyer?.nickName,
+  //             buyerPhone: buyer?.phone,
+  //             status: PAYMENT_COMPLETE,
+  //             // dateOrdered: moment().format(),
+  //             dateOrdered: new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().split('.')[0],
+  //             // 2025-03-02 10:24:49: deliveryDate 추가, deliveryDate 초기화는 '' empty string으로 초기화 한다.
+  //             deliveryDate: null,
+  //           };
+
+  //           const token = await getToken();
+  //                     //헤드 정보를 만든다.
+  //           const config = {
+  //                         headers: {
+  //                           'Content-Type': 'application/json; charset=utf-8',
+  //                           Authorization: `Bearer ${token}`,
+  //                         },
+  //                     };
+
+  //           try {
+
+  //             // const data: AxiosResponse = await axios.post(
+  //             //   `${baseURL}orders`,
+  //             //   order,
+  //             // );
+
+  //             // 2025-03-17 12:59:10, order/sql로 변경
+
+  //             const data: AxiosResponse = await axios.post(
+  //               `${baseURL}orderSql`,
+  //               order,
+  //               config,
+  //             );
+  //             return data;
+
+  //           } catch (error) {
+  //             console.log('finishOrder error = ', error);
+  //             // errorAlert('에러', '주문 요청 에러 발생');
+  //             return null;
+  //           }
+
+  //         }),
+  //       );
+
+  //       const response = await orderLists;
+  //       console.log(' PaymentMainScreen response = ', response);
+
+  //       // Check if all responses have status 200
+  //       const allSuccess = response?.every(res => res?.status === 200);
+
+  //       if (allSuccess) {
+  //         // Show success message
+  //         alertMsg(
+  //           strings.SUCCESS,
+  //           '주문이 성공적으로 접수되었습니다!',
+  //           // () => {
+  //           //   props.navigation.navigate('UserMain', {screen: 'ProfileScreen'});
+  //           // },
+  //           // props,
+  //         );
+
+  //         // 2024-12-25 :주문이 성공적으로 진행이 되었기에 cart array를 삭제한다.
+  //         // cartArray.map(item => props.removeFromCart(item));
+  //         // 2025-02-02 20:16:23 - 해당되는 item 만을 삭제하도록 수정
+  //         props.removeFromCart(item);
+  //       } else {
+  //         // Show error message
+  //         alertMsg(
+  //           strings.ERROR,
+  //           '일부 주문이 실패했습니다. 다시 시도해 주세요.',
+  //         );
+  //       }
+  //     },
+  //     params: [cartArray],
+  //   };
+
+  //   confirmAlert(param);
+  // };
+
+  const finishAllOrder = async (cartItems: CartItem[]) => {
+  const m_uid = generateOrderNumber();
+
+  const param: ConfirmAlertParams = {
+    title: '전체 상품을 구매하시겠습니까?',
+    message: '주문이 접수됩니다. 송금해 주세요.',
+    func: async () => {
+      const orderLists = await Promise.all(
+        deliveryList.map(async (element) => {
+          const order = {
+            ...element,
+            orderItems: cartItems,
+            orderNumber: m_uid,
+            isPaid: false,
+            user: state.user?.userId,
+            buyerName: buyer?.nickName,
+            buyerPhone: buyer?.phone,
+            status: PAYMENT_COMPLETE,
+            dateOrdered: new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().split('.')[0],
+            deliveryDate: null,
+          };
+
+          try {
+            const token = await getToken();
+            const config = {
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+              },
             };
 
-            const token = await getToken();
-                      //헤드 정보를 만든다.
-            const config = {
-                          headers: {
-                            'Content-Type': 'application/json; charset=utf-8',
-                            Authorization: `Bearer ${token}`,
-                          },
-                      };
+            const data: AxiosResponse = await axios.post(
+              `${baseURL}orderSql`,
+              order,
+              config,
+            );
 
-            try {
+            return data;
+          } catch (error) {
+            console.log('finishOrder error = ', error);
+            return null;
+          }
+        })
+      );
 
-              // const data: AxiosResponse = await axios.post(
-              //   `${baseURL}orders`,
-              //   order,
-              // );
-
-              // 2025-03-17 12:59:10, order/sql로 변경
-
-              const data: AxiosResponse = await axios.post(
-                `${baseURL}orderSql`,
-                order,
-                config,
-              );
-              return data;
-
-            } catch (error) {
-              console.log('finishOrder error = ', error);
-              // errorAlert('에러', '주문 요청 에러 발생');
-              return null;
-            }
-
-          }),
-        );
-
-        const response = await orderLists;
-        console.log(' PaymentMainScreen response = ', response);
-
-        // Check if all responses have status 200
-        const allSuccess = response?.every(res => res?.status === 200);
-
-        if (allSuccess) {
-          // Show success message
-          alertMsg(
-            strings.SUCCESS,
-            '주문이 성공적으로 접수되었습니다!',
-            // () => {
-            //   props.navigation.navigate('UserMain', {screen: 'ProfileScreen'});
-            // },
-            // props,
-          );
-
-          // 2024-12-25 :주문이 성공적으로 진행이 되었기에 cart array를 삭제한다.
-          // cartArray.map(item => props.removeFromCart(item));
-          // 2025-02-02 20:16:23 - 해당되는 item 만을 삭제하도록 수정
-          props.removeFromCart(item);
-        } else {
-          // Show error message
-          alertMsg(
-            strings.ERROR,
-            '일부 주문이 실패했습니다. 다시 시도해 주세요.',
-          );
-        }
-      },
-      params: [cartArray],
-    };
-
-    confirmAlert(param);
+      const allSuccess = orderLists.every(res => res?.status === 200);
+      if (allSuccess) {
+        alertMsg(strings.SUCCESS, '주문이 성공적으로 접수되었습니다!');
+        props.clearCart();
+      } else {
+        alertMsg(strings.ERROR, '일부 주문이 실패했습니다. 다시 시도해 주세요.');
+      }
+    },
+    params: [],
   };
+
+  confirmAlert(param);
+};
+
 
   const deliveryCard = (index: number, item: IDeliveryInfo) => {
     return (
@@ -249,6 +309,38 @@ const PaymentMainScreen: React.FC<PaymentMainScreenProps> = props => {
       </View>
     );
   };
+
+  // 장바구니 전체 재고 확인
+const checkStockAllAvailable = async (cartItems: CartItem[]) => {
+  for (const item of cartItems) {
+    if (Number(item.product.stock) < item.quantity) {
+      alertMsg('에러', `${item.product.name} 상품의 재고가 부족합니다.`);
+      return false;
+    }
+  }
+
+  // 재고 차감
+  for (const item of cartItems) {
+    try {
+      const token = await getToken();
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const data = {
+        productId: item.product.id,
+        quantity: item.quantity,
+      };
+      await axios.post(`${baseURL}stock/decrease`, JSON.stringify(data), config);
+    } catch (error) {
+      alertMsg('에러', `${item.product.name} 재고 차감 실패`);
+      return false;
+    }
+  }
+  return true;
+};
 
   const onOpen = () => {
     console.log('confirm.jsx : onOpen');
@@ -291,6 +383,10 @@ const PaymentMainScreen: React.FC<PaymentMainScreenProps> = props => {
                   }}>
                   주문 내역:
                 </Text>
+                <View style={styles.CardContainer}>
+                  <Text style={{fontWeight: 'bold', fontSize: RFPercentage(2.3)}}>
+                    상품 목록:
+                  </Text>
 
                 {props.cart.map((item, index) => {
                   const amount =
@@ -303,10 +399,11 @@ const PaymentMainScreen: React.FC<PaymentMainScreenProps> = props => {
                   return (
                     <View
                       key={index}
-                      style={styles.CardContainer}>
+                      style={{marginVertical: 6}}>
                       <View style={styles.HStackHead}>
                         <Text style={{fontWeight: 'bold'}}>
-                          상품: {item.product.name || ''}
+                          상품: {item.product.name || ''} x{' '}
+                          {item.quantity * deliveryList.length}
                         </Text>
 
                         <TouchableOpacity
@@ -327,48 +424,77 @@ const PaymentMainScreen: React.FC<PaymentMainScreenProps> = props => {
                           <Text style={styles.trashIcon}>🗑️</Text>
                         </TouchableOpacity>
                       </View>
-
-                      <Text>수량: {item.quantity * deliveryList.length}</Text>
                       <Text>송금할 금액: {amount}원</Text>
-                      {deliveryList.map((item, index) =>
-                        deliveryCard(index, item),
-                      )}
-                      <View
-                        style={{
-                          flex: 1,
-                          // width: width * 0.5,
-                          flexDirection: 'row',
-                          justifyContent: 'space-between',
-                          margin: RFPercentage(0.5),
-                        }}>
-                        <TouchableOpacity
-                          onPress={() => {
-                            console.log('송금할 계좌 item = ', item);
-                            console.log('amount = ', amount);
-                            setCart(item);
-                            setTransMoney(String(amount));
-                            onOpen();
-                          }}>
-                          <View >
-                            <Text style={styles.buttonTextStyle}>
-                              송금할 계좌
-                            </Text>
-                          </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          onPress={() => {
-                            finishOrder(item);
-                          }}>
-                          <View >
-                            <Text style={styles.buttonTextStyle}>
-                              송금 완료
-                            </Text>
-                          </View>
-                        </TouchableOpacity>
-                      </View>
+
                     </View>
                   );
                 })}
+
+                {/** 배송지 정보 하나만 표시 */}
+                {deliveryList.length > 0 && deliveryCard(0, deliveryList[0])}
+
+                 {/** 총합 금액 계산 */}
+                  <Text style={{marginTop: 10, fontWeight: 'bold'}}>
+                    총 금액:{' '}
+                    {props.cart
+                      .reduce((acc, item) => {
+                        const amt =
+                          Number(item.product.price) *
+                          (100 - Number(item.product.discount || 0)) *
+                          0.01 *
+                          item.quantity *
+                          deliveryList.length;
+                        return acc + amt;
+                      }, 0)
+                      .toLocaleString()}
+                    원
+                  </Text>
+
+                  <View
+                    style={{
+                      flex: 1,
+                      // width: width * 0.5,
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      margin: RFPercentage(0.5),
+                    }}>
+                    <TouchableOpacity
+                        onPress={() => {
+                          const total = props.cart.reduce((acc, item) => {
+                            const amt =
+                              Number(item.product.price) *
+                              (100 - Number(item.product.discount || 0)) *
+                              0.01 *
+                              item.quantity *
+                              deliveryList.length;
+                            return acc + amt;
+                          }, 0);
+                          setCart(undefined); // TransferSheet에서 전체 처리하도록
+                          setTransMoney(String(total));
+                          onOpen();
+                        }}>
+                        <Text style={styles.buttonTextStyle}>송금할 계좌</Text>
+                    </TouchableOpacity>
+
+
+                     <TouchableOpacity
+                      onPress={async () => {
+                        const available = await checkStockAllAvailable(props.cart);
+                          if (available) {
+                            await finishAllOrder(props.cart);
+                          }
+                        }}
+                        style={{
+                          margin: RFPercentage(2),
+                          padding: RFPercentage(1),
+                          backgroundColor: colors.themeColor,
+                          borderRadius: RFPercentage(1),
+                          alignItems: 'center',
+                        }}>
+                       <Text style={{color: 'white', fontSize: RFPercentage(2.5), fontWeight: 'bold'}}>전체 주문하기</Text>
+                    </TouchableOpacity>
+                      </View>
+                    </View>
               </View>
             </ScrollView>
           </>

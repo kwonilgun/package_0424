@@ -29,6 +29,7 @@ export type AdminOrderStackParamList = {
       actionFt: (id: string, props: any) => void;
       orders: DataList;
     };
+  OrderTotalChangeScreen:undefined
   PrepareDeliveryScreen: undefined;
   FindOrderNumberScreen: undefined;
   OrderAIScreen: undefined;
@@ -64,6 +65,11 @@ export type OrderChangeScreenProps = {
   // items: DataList | null;
   route: RouteProp<RootStackParamList, 'OrderChangeScreen'>;
   navigation: StackNavigationProp<RootStackParamList, 'OrderChangeScreen'>;
+};
+export type OrderTotalChangeScreenProps = {
+  // items: DataList | null;
+  route: RouteProp<RootStackParamList, 'OrderTotalChangeScreen'>;
+  navigation: StackNavigationProp<RootStackParamList, 'OrderTotalChangeScreen'>;
 };
 
 export type PrepareDeliveryScreenProps = {

@@ -16,6 +16,7 @@ import CompleteReturnScreen from '../../Screen/Admin/Order/CompleteReturnScreen'
 import RequestReturnScreen from '../../Screen/Admin/Order/RequestReturnScreen';
 import OrderAIScreen from '../../Screen/Admin/Order/OrderAIScreen';
 import OrderChangeScreen from '../../Screen/Orders/OrderChangeScreen';
+import OrderTotalChangeScreen from '../../Screen/Orders/OrderTotalChangeScreen';
 
 // 2024-02-14 : 버그 Fix, RootStackParamList 를 추가함. 타입을 지정
 const Stack = createStackNavigator<AdminOrderStackParamList>();
@@ -91,6 +92,19 @@ function MyStack() {
           <Stack.Screen
             name="OrderChangeScreen"
             component={OrderChangeScreen}
+            options={({navigation, route}) => ({
+              headerShown: false,
+              headerLeft: () => null,
+              title: '개인정보',
+              // headerTitle: props => (
+              //   <LogoTitle title="루트원 마켓" navigation={navigation} />
+              // ),
+            })}
+          />
+
+          <Stack.Screen
+            name="OrderTotalChangeScreen"
+            component={OrderTotalChangeScreen}
             options={({navigation, route}) => ({
               headerShown: false,
               headerLeft: () => null,

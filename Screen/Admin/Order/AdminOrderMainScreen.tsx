@@ -28,6 +28,7 @@ import { AdminExpandable } from '../../Orders/AdminExpandable';
 
 import { height, width } from '../../../styles/responsiveSize';
 import adminDeleteOrder from '../../Orders/adminDeleteOrder';
+import { alertMsg } from '../../../utils/alerts/alertMsg';
 
 const AdminOrderMainScreen: React.FC<AdminOrderMainScreenProps> = props => {
 
@@ -36,6 +37,7 @@ const AdminOrderMainScreen: React.FC<AdminOrderMainScreenProps> = props => {
   const [dataPaymentCompleteList, setDataPaymentCompleteList] = useState<DataList | null>(null);
   const [dataOnDeliveryList, setDataOnDeliveryList] = useState<DataList | null>(null);
   const [dataDeliveryCompleteList, setDataDeliveryCompleteList] = useState<DataList | null>(null);
+  const [orders, setOrders] = useState<IOrderInfo[] | null>(null);
   const [orderList, setOrderList] = useState<DataList | null>(null);
   const [paymentCompleteList, setPaymentCompleteList] = useState<DataList | null>(null);
   const [onDeliveryList, setOnDeliveryList] = useState<DataList | null>(null);
@@ -77,7 +79,7 @@ const AdminOrderMainScreen: React.FC<AdminOrderMainScreenProps> = props => {
       );
 
       const orders = response.data as IOrderInfo[];
-      console.log('ProductMainScreen orders = ', orders);
+      console.log('AdminOrderMainScreen orders = ', orders);
 
       if (orders.length) {
         // 2023-05-20 : Date를 new를 통해서 값으로 변환해야 소팅이 동작이 된다. 아니면 NaN이 리턴이 된다.
@@ -88,10 +90,11 @@ const AdminOrderMainScreen: React.FC<AdminOrderMainScreenProps> = props => {
         );
         makeExpandableDataList(orders, setDataList);
         setOrderList(dataList);
+        setOrders(orders);
 
       }
       else{
-        console.log('ProductMainScreen orders is empty');
+        console.log(' is empty');
         setOrderList([]);
       }
     } catch (error) {
@@ -220,9 +223,41 @@ const AdminOrderMainScreen: React.FC<AdminOrderMainScreenProps> = props => {
     }
   };
 
+  const gotoTotalChangeScreen = ()=>{
+    console.log('전체 업데이트');
+    props.navigation.navigate('OrderTotalChangeScreen');
+  };
+
+  const deleteAllOrders = async () => {
+    console.log('전체 주문 삭제');
+    const token = await getToken();
+              //헤드 정보를 만든다.
+    const config = {
+                  headers: {
+                    'Content-Type': 'application/json; charset=utf-8',
+                    Authorization: `Bearer ${token}`,
+                  },
+              };
+    try {
+      const response: AxiosResponse = await axios.delete(
+        `${baseURL}orderSql/allDelete`,
+                    config,
+      );
+      if (response.status === 200 || response.status === 201) {
+        console.log('response.data = ', response.data);
+            alertMsg('성공', response.data);
+      }
+    } catch (error) {
+      console.log('에러 = ', error);
+    }
+  };
+
   const renderTotalOrdersStatus =  () => (
         <View style={styles.Container}>
              <Text style={styles.title}>전체 주문 현황</Text>
+
+             <Text onPress = {gotoTotalChangeScreen}> 전체 업데이트</Text>
+             <Text onPress = {deleteAllOrders}> 주문 전체 삭제</Text>
 
              <ScrollView>
               <View style={styles.listContainer}>

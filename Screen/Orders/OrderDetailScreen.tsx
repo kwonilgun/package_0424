@@ -10,8 +10,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   KeyboardAvoidingView,
-  Platform,
-  Button,
+  Platform
 } from 'react-native';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -35,12 +34,6 @@ import {
 } from '../../utils/alerts/confirmAlert';
 import strings from '../../constants/lang';
 import { useAuth } from '../../context/store/Context.Manager';
-import DropDownPicker from 'react-native-dropdown-picker';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { alertMsg } from '../../utils/alerts/alertMsg';
-import { errorAlert } from '../../utils/alerts/errorAlert';
-import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { width } from '../../styles/responsiveSize';
 
 
 type IOrderStatus = {
@@ -52,7 +45,7 @@ const OrderDetailScreen: React.FC<OrderDetailScreenProps> = props => {
   const {state} = useAuth();
   const [loading, setLoading] = useState<boolean>(true);
   const [item] = useState<IOrderInfo>(props.route.params?.item);
-  const [orderItem, setOrderItem] = useState<IOrderItem | null>(null);
+  const [orderItems, setOrderItems] = useState<IOrderItem[]| null>(null);
   const [total, setTotal] = useState<Number>(0);
 
   // const [openMethod, setOpenMethod] = useState<boolean>(false);
@@ -68,14 +61,14 @@ const OrderDetailScreen: React.FC<OrderDetailScreenProps> = props => {
   //   ]);
 
   // const isAdmin = state.user?.isAdmin;
-  console.log('OrderDetailScreen item = ', props.route.params?.item);
+  // console.log('OrderDetailScreen item = ', props.route.params?.item);
   // const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
 
   useEffect(() => {
     if (!isEmpty(props.route.params.item)) {
-      console.log('');
-      fetchOrderItemFromAWS();
+      console.log('OrderDetailScreen item = ', props.route.params.item);
+      fetchOrderItemsFromDb();
       setLoading(false);
     }
     return () => {
@@ -84,41 +77,40 @@ const OrderDetailScreen: React.FC<OrderDetailScreenProps> = props => {
     };
   }, [props.route.params.item]);
 
-  const fetchOrderItemFromAWS = async () => {
+  const fetchOrderItemsFromDb = async () => {
     const token = await getToken();
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     };
-    const orderItemNumber = item.orderItems;
-    console.log('OrderDetail orderItemNumber ', orderItemNumber);
+    
+    const orderItemNumbers:string[]  = item.orderItems;
+    console.log('OrderDetail orderItemNumber ', orderItemNumbers);
 
     try {
-      const response: AxiosResponse = await axios.get(
-        `${baseURL}orderSql/orderItems/${orderItemNumber}`,
-        config,
-      );
-      if (response.status === 200) {
-        console.log('orderItem = ', response.data);
-        setOrderItem(response.data);
-
-        //   setBrand(res.data.product.brand);
-        //   setQuantity(res.data.quantity);
-        //   setPrice(res.data.product.price);
-        //   setDiscount(res.data.product.discount);
-        setTotal(
-          Number(response.data.product.price ?? 0) *
-            (100 - Number(response.data.product.discount ?? 0)) *
-            0.01 *
-            response.data.quantity,
+        const responses: AxiosResponse[] = await Promise.all(
+          orderItemNumbers.map(id =>
+            axios.get(`${baseURL}orderSql/orderItems/${id}`, config)
+          )
         );
+
+        const fetchedItems = responses.map(res => res.data as IOrderItem);
+        setOrderItems(fetchedItems);
+
+        const totalAmount = fetchedItems.reduce((sum, cur) => {
+          const price = Number(cur.product.price ?? 0);
+          const discount = Number(cur.product.discount ?? 0);
+          const quantity = Number(cur.quantity ?? 1);
+          return sum + price * (100 - discount) * 0.01 * quantity;
+        }, 0);
+
+        setTotal(totalAmount);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
   };
 
   const onPressLeft = () => {
@@ -181,18 +173,38 @@ const OrderDetailScreen: React.FC<OrderDetailScreenProps> = props => {
               <View style={GlobalStyles.VStack}>
 
 
-                <View style={[styles.orderContainer, {marginTop: RFPercentage(5)}]}>
-                  <Text style={styles.heading}>주문 정보</Text>
+                { orderItems ? orderItems.map((orderItem, index) => (
+                  <View key={ index} style={[styles.orderContainer, { marginTop: RFPercentage(1) }]}>
+                    <Text style={styles.heading}>주문 정보 {index + 1}</Text>
 
-                  {/* <View style={styles.row}>
-                    <Text style={styles.label}>주문 상태:</Text>
-                    <Text style={styles.valueError}>{orderMsg}</Text>
-                  </View> */}
+                    <View style={styles.row}>
+                      <Text style={styles.label}>상품 브랜드:</Text>
+                      <Text style={styles.value}>{orderItem.product.name}</Text>
+                    </View>
 
-                  <View style={styles.row}>
-                    <Text style={styles.label}>상품 브랜드:</Text>
-                    <Text style={styles.value}>{orderItem?.product.name}</Text>
+                    <View style={styles.row}>
+                      <Text style={styles.label}>주문 수량(개):</Text>
+                      <Text style={styles.value}>{orderItem.quantity}</Text>
+                    </View>
+
+                    <View style={styles.row}>
+                      <Text style={styles.label}>상품 가격(원):</Text>
+                      <Text style={styles.value}>
+                        {orderItem.product.price?.toLocaleString()}
+                      </Text>
+                    </View>
+
+                    <View style={styles.row}>
+                      <Text style={styles.label}>할인율(%):</Text>
+                      <Text style={styles.value}>
+                        {orderItem.product.discount}
+                      </Text>
+                    </View>
                   </View>
+                )) : null}
+
+                <View style={styles.orderContainer}>
+                  <Text style={styles.heading}>주문 세부 정보</Text>
 
                   <View style={styles.row}>
                     <Text style={styles.label}>주문 번호:</Text>
@@ -207,27 +219,15 @@ const OrderDetailScreen: React.FC<OrderDetailScreenProps> = props => {
                   </View>
 
                   <View style={styles.row}>
-                    <Text style={styles.label}>주문 수량(개):</Text>
-                    <Text style={styles.value}>{orderItem?.quantity}</Text>
-                  </View>
-
-                  <View style={styles.row}>
-                    <Text style={styles.label}>상품 가격(원):</Text>
+                    <Text style={styles.label}>배송 날짜:</Text>
                     <Text style={styles.value}>
-                      {orderItem?.product.price?.toLocaleString()}
-                    </Text>
-                  </View>
-
-                  <View style={styles.row}>
-                    <Text style={styles.label}>할인율(%):</Text>
-                    <Text style={styles.value}>
-                      {orderItem?.product.discount}
+                      {item.deliveryDate ? dateToKoreaDate(new Date(item.deliveryDate)) : '미정'}
                     </Text>
                   </View>
 
                   <View style={styles.row}>
                     <Text style={styles.label}>총 금액(원):</Text>
-                    <Text style={styles.value}>{total?.toLocaleString()}</Text>
+                    <Text style={styles.value}>{total.toLocaleString()}</Text>
                   </View>
 
                   <Text style={styles.label}>받는사람(전화번호):</Text>
@@ -246,19 +246,14 @@ const OrderDetailScreen: React.FC<OrderDetailScreenProps> = props => {
                 </View>
 
                 {props.route.params.actionFt === null ? null : (
-
-                      <TouchableOpacity
-                        onPress={() => {
-                          deleteOrderItem();
-                        }}>
-                        <View style={[GlobalStyles.buttonSmall, {marginTop:RFPercentage(5)}]}>
-                          <Text style={GlobalStyles.buttonTextStyle}>삭제</Text>
-                        </View>
-                      </TouchableOpacity>
-
+                  <TouchableOpacity onPress={deleteOrderItem}>
+                    <View style={[GlobalStyles.buttonSmall, { marginTop: RFPercentage(5) }]}>
+                      <Text style={GlobalStyles.buttonTextStyle}>삭제</Text>
+                    </View>
+                  </TouchableOpacity>
                 )}
-
               </View>
+
             </ScrollView>
           </KeyboardAvoidingView>
         )}
@@ -321,7 +316,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   orderContainer: {
-    margin: RFPercentage(0.2),
+    marginTop: RFPercentage(1),
     padding: 16,
     borderWidth: 1,
     borderRadius: 10,

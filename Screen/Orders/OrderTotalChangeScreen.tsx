@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   KeyboardAvoidingView,
-  Platform
+  Platform,
 } from 'react-native';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -20,7 +20,7 @@ import isEmpty from '../../utils/isEmpty';
 import LoadingWheel from '../../utils/loading/LoadingWheel';
 import WrapperContainer from '../../utils/basicForm/WrapperContainer';
 import HeaderComponent from '../../utils/basicForm/HeaderComponents';
-import { OrderChangeScreenProps } from '../model/types/TUserNavigator';
+
 import { IOrderInfo } from '../model/interface/IOrderInfo';
 import GlobalStyles from '../../styles/GlobalStyles';
 import { dateToKoreaDate } from '../../utils/time/dateToKoreaTime';
@@ -37,8 +37,8 @@ import { useAuth } from '../../context/store/Context.Manager';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { alertMsg } from '../../utils/alerts/alertMsg';
-import { errorAlert } from '../../utils/alerts/errorAlert';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { OrderTotalChangeScreenProps } from '../model/types/TAdminOrderNavigator';
 
 
 type IOrderStatus = {
@@ -48,15 +48,15 @@ type IOrderStatus = {
 
 
 
-const OrderChangeScreen: React.FC<OrderChangeScreenProps> = props => {
+const OrderTotalChangeScreen: React.FC<OrderTotalChangeScreenProps> = props => {
   const {state} = useAuth();
   const [loading, setLoading] = useState<boolean>(true);
-  const [item] = useState<IOrderInfo>(props.route.params?.item);
+  // const [item] = useState<IOrderInfo>(props.route.params?.item);
   const [orderItem, setOrderItem] = useState<IOrderItem | null>(null);
   // const [total, setTotal] = useState<Number>(0);
 
   const [openMethod, setOpenMethod] = useState<boolean>(false);
-  const [valueMethod, setValueMethod] = useState<number>(Number(props.route.params?.item.status));
+  // const [valueMethod, setValueMethod] = useState<number>(Number(props.route.params?.item.status));
   const [itemsMethod, setItemsMethod] = useState([
       {label: '주문 접수', value: 1},
       {label: '결재 완료', value: 2},
@@ -68,7 +68,6 @@ const OrderChangeScreen: React.FC<OrderChangeScreenProps> = props => {
     ]);
 
   const isAdmin = state.user?.isAdmin;
-  // console.log('OrderChangeScreen item = ', props.route.params?.item);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
 
@@ -84,47 +83,46 @@ const OrderChangeScreen: React.FC<OrderChangeScreenProps> = props => {
       reset,
     } = useForm<IOrderStatus>({
       defaultValues: {
-       status: Number(props.route.params?.item.status),
-       deliveryDate: props.route.params?.item.deliveryDate,
+       status:0,
+       deliveryDate: null,
       },
     });
 
   useEffect(() => {
-    if (!isEmpty(props.route.params.item)) {
-      console.log('');
-      fetchOrderItemFromAWS();
+    
+      // fetchOrderItemFromAWS();
       setLoading(false);
-    }
+    
     return () => {
-      console.log('OrderChangeScreen: useEffect : exit 한다.');
+      console.log('OrderTotalChangeScreen: useEffect : exit 한다.');
       setLoading(true);
     };
-  }, [props.route.params.item]);
+  }, []);
 
-  const fetchOrderItemFromAWS = async () => {
-    const token = await getToken();
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    const orderItemNumber = item.orderItems;
-    console.log('OrderChange orderItemNumber ', orderItemNumber);
+  // const fetchOrderItemFromAWS = async () => {
+  //   const token = await getToken();
+  //   const config = {
+  //     headers: {
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   };
+  //   const orderItemNumber = item.orderItems;
+  //   console.log('OrderChange orderItemNumber ', orderItemNumber);
 
-    try {
-      const response: AxiosResponse = await axios.get(
-        `${baseURL}orderSql/orderItems/${orderItemNumber}`,
-        config,
-      );
-      if (response.status === 200) {
-        setOrderItem(response.data);
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  //   try {
+  //     const response: AxiosResponse = await axios.get(
+  //       `${baseURL}orderSql/orderItems/${orderItemNumber}`,
+  //       config,
+  //     );
+  //     if (response.status === 200) {
+  //       setOrderItem(response.data);
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const onPressLeft = () => {
     props.navigation.goBack();
@@ -149,35 +147,23 @@ const OrderChangeScreen: React.FC<OrderChangeScreenProps> = props => {
     );
   };
 
-  const deleteOrderItem = async () => {
-    console.log('OrderedDetail.jsx: 삭제 누름');
-
-    const param: ConfirmAlertParams = {
-      title: strings.CONFIRMATION,
-      message: '주문을  삭제하시겠습니까?',
-      func: props.route.params.actionFt,
-      params: [item.id, props],
-    };
-
-    confirmAlert(param);
-  };
 
   const confirmUpload: SubmitHandler<IOrderStatus> = async data => {
     console.log('업로드 order data = ', data);
 
     const param: ConfirmAlertParams = {
       title: strings.CONFIRMATION,
-      message: '주문상태 변경',
+      message: '전체 상태 변경',
       func: async (in_data: IOrderStatus) => {
         if (in_data.deliveryDate) {
           try {
             const date = new Date(in_data.deliveryDate);
-            console.log('주문상태 업로드 deliveryDate = ', date.toISOString());
+            console.log('전체 업데이트 업로드 deliveryDate = ', date.toISOString());
           } catch (e) {
             console.log('deliveryDate 변환 실패: ', e);
           }
         }
-        console.log('주문상태 업로드 status = ', in_data.status);
+        console.log('orderTotalChangeScreen 주문상태 업로드 status = ', in_data.status);
         const out_data: IOrderStatus = in_data;
 
         const token = await getToken();
@@ -187,19 +173,19 @@ const OrderChangeScreen: React.FC<OrderChangeScreenProps> = props => {
             Authorization: `Bearer ${token}`,
           },
         };
-        console.log('주문상태 업로드 status = ', in_data.status);
+
         try {
           const response: AxiosResponse = await axios.put(
-            `${baseURL}orderSql/status/${item.id}`,
+            `${baseURL}orderSql/totalChange`,
             JSON.stringify(out_data),
             config,
           );
           if (response.status === 200 || response.status === 201) {
-            alertMsg(strings.SUCCESS, strings.UPLOAD_SUCCESS);
+            alertMsg(strings.SUCCESS, '전체 상태/일정 업데이트 성공');
           } else if (response.status === 202) {
-            alertMsg('에러', '주문상태 202');
+            alertMsg('에러', response.data.msg);
           } else if (response.status === 203) {
-            alertMsg('에러', '주문 ');
+            alertMsg('에러', response.data.msg);
           }
         } catch (error) {
           console.log('confirmUpload error, error = ', error);
@@ -223,7 +209,7 @@ const OrderChangeScreen: React.FC<OrderChangeScreenProps> = props => {
   const handleConfirm = (date: Date) => {
     setValue('deliveryDate', date);
     console.log('handleConfirm date ', date.toISOString());
-    console.log('OrderChangeScreen deliveryDate =', dateToKoreaDate(date) );
+    console.log('OrderTotalChangeScreen deliveryDate =', dateToKoreaDate(date) );
     hideDatePicker();
   };
 
@@ -248,7 +234,7 @@ const OrderChangeScreen: React.FC<OrderChangeScreenProps> = props => {
     <WrapperContainer containerStyle={{paddingHorizontal: 0}}>
       <HeaderComponent
         rightPressActive={false}
-        centerText="주문 상세"
+        centerText="주문 전체 변경"
         containerStyle={{paddingHorizontal: 8}}
         isLeftView={true}
         leftCustomView={LeftCustomComponent}
@@ -272,7 +258,6 @@ const OrderChangeScreen: React.FC<OrderChangeScreenProps> = props => {
                     alignContent: 'center',
                     alignItems: 'center',
                   }} >
-                   
 
                   {/* {props.route.params.actionFt === null ? null : (
                     <View style={styles.actionContainer}>
@@ -365,7 +350,7 @@ const OrderChangeScreen: React.FC<OrderChangeScreenProps> = props => {
                       }>
                         <View style={[GlobalStyles.buttonSmall, {marginTop: RFPercentage(10)}]}>
                         <Text style={GlobalStyles.buttonTextStyle}>
-                        업데이트
+                        전체 업데이트
                         </Text>
                         </View>
                       </TouchableOpacity>
@@ -476,4 +461,4 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
 });
-export default OrderChangeScreen;
+export default OrderTotalChangeScreen;

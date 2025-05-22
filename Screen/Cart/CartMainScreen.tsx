@@ -160,11 +160,11 @@ const CartMainScreen: React.FC<CartMainScreenProps> = props => {
                   </Text>
                   <TouchableOpacity
                     onPress={() => {
-                      console.log('배송지 버튼 click');
+                      console.log('구매하기 버튼 click');
                       gotoDeliveryScreen();
                     }}>
                     <View style={GlobalStyles.buttonSmall}>
-                      <Text style={GlobalStyles.buttonTextStyle}>배송지</Text>
+                      <Text style={GlobalStyles.buttonTextStyle}>구매하기</Text>
                     </View>
                   </TouchableOpacity>
                 </View>
