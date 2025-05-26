@@ -190,7 +190,7 @@ const OrderDetailScreen: React.FC<OrderDetailScreenProps> = props => {
                     <View style={styles.row}>
                       <Text style={styles.label}>상품 가격(원):</Text>
                       <Text style={styles.value}>
-                        {orderItem.product.price?.toLocaleString()}
+                        {orderItem.product.price ? orderItem.product.price?.toLocaleString() : '없음'}
                       </Text>
                     </View>
 

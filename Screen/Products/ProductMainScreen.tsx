@@ -227,6 +227,15 @@ const ProductMainScreen: React.FC<ProductMainScreenProps> = props => {
   const renderPackagedProductList = (packageName: string, products: ISProduct[]) => (
     <View style={styles.packageContainer} key={packageName}>
       <Text style={styles.packageTitle}>{packageName}-패키지</Text>
+
+    {/* 헤더 타이틀 */}
+    <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: RFPercentage(1) }}>
+      <Text style={[styles.headerText, { width: RFPercentage(18), marginLeft: RFPercentage(0.5), fontWeight: 'bold' }]}>상품명</Text>
+      <Text style={[styles.headerText, { width: RFPercentage(5), fontWeight: 'bold' }]}>단위</Text>
+      <Text style={[styles.headerText, { width: RFPercentage(10), fontWeight: 'bold' }]}>가격</Text>
+      <Text style={[styles.headerText, { width: RFPercentage(10), fontWeight: 'bold' }]}>재고</Text>
+    </View>
+
       {products.map(item => (
         <TouchableOpacity
           key={item.id}
@@ -240,7 +249,7 @@ const ProductMainScreen: React.FC<ProductMainScreenProps> = props => {
           }}
         >
           <View style={{flex:1, flexDirection:'row', alignItems:'center'}}>
-              <Text style={[styles.headerText, {width:RFPercentage(20),  marginLeft: RFPercentage(2)}]}>{item.name}</Text>
+              <Text style={[styles.headerText, {width:RFPercentage(18),  marginLeft: RFPercentage(0.5)}]}>{item.name}</Text>
               <Text style={[styles.headerText, {width:RFPercentage(5)  }]}>{item.unitDesc}</Text>
               <Text style={[styles.headerText, {width:RFPercentage(10) }]}>{item.price.toString().split('.')[0]}원</Text>
               <Text style={[styles.headerText, {width:RFPercentage(10) }]}>{item.stock.toString()}개</Text>
@@ -393,9 +402,12 @@ const styles = StyleSheet.create({
     },
     packageTitle: {
       fontWeight: 'bold',
-      fontSize: 18,
+      fontSize: RFPercentage(3),
       marginBottom: 10,
       color: 'black',
+      textAlign: 'center',
+      borderBottomWidth: 1,
+      borderColor: 'black',
     },
     packagedProductItem: {
       // padding: RFPercentage(1),

@@ -58,13 +58,13 @@ const OrderChangeScreen: React.FC<OrderChangeScreenProps> = props => {
   const [openMethod, setOpenMethod] = useState<boolean>(false);
   const [valueMethod, setValueMethod] = useState<number>(Number(props.route.params?.item.status));
   const [itemsMethod, setItemsMethod] = useState([
-      {label: '주문 접수', value: 1},
-      {label: '결재 완료', value: 2},
+      // {label: '주문 접수', value: 1},
+      // {label: '결재 완료', value: 2},
       {label: '배송 준비', value: 3},
       {label: '배송중', value: 4},
       {label: '배송 완료', value: 5},
-      {label: '반품 요청', value: 6},
-      {label: '반품 완료', value: 7},
+      // {label: '반품 요청', value: 6},
+      // {label: '반품 완료', value: 7},
     ]);
 
   const isAdmin = state.user?.isAdmin;

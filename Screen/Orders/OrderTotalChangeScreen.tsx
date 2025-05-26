@@ -58,13 +58,13 @@ const OrderTotalChangeScreen: React.FC<OrderTotalChangeScreenProps> = props => {
   const [openMethod, setOpenMethod] = useState<boolean>(false);
   // const [valueMethod, setValueMethod] = useState<number>(Number(props.route.params?.item.status));
   const [itemsMethod, setItemsMethod] = useState([
-      {label: '주문 접수', value: 1},
-      {label: '결재 완료', value: 2},
+      // {label: '주문 접수', value: 1},
+      // {label: '결재 완료', value: 2},
       {label: '배송 준비', value: 3},
       {label: '배송중', value: 4},
       {label: '배송 완료', value: 5},
-      {label: '반품 요청', value: 6},
-      {label: '반품 완료', value: 7},
+      // {label: '반품 요청', value: 6},
+      // {label: '반품 완료', value: 7},
     ]);
 
   const isAdmin = state.user?.isAdmin;
@@ -182,6 +182,20 @@ const OrderTotalChangeScreen: React.FC<OrderTotalChangeScreenProps> = props => {
           );
           if (response.status === 200 || response.status === 201) {
             alertMsg(strings.SUCCESS, '전체 상태/일정 업데이트 성공');
+
+          // 👇 푸시 알림 요청 추가
+          await axios.post(
+            `${baseURL}notification/pushOrderStatus`,
+            {
+              status: in_data.status,
+              deliveryDate: in_data.deliveryDate,
+            },
+            config,
+          );
+
+
+
+
           } else if (response.status === 202) {
             alertMsg('에러', response.data.msg);
           } else if (response.status === 203) {
