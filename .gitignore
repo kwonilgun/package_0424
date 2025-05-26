@@ -5,7 +5,7 @@ constants/
 #
 android/app/*.json
 android/gradle.properties
-ios/market_2024_12_13/GoogleService-Info.plist
+ios/package_0424/GoogleService-Info.plist
 
 #ignore 
 
