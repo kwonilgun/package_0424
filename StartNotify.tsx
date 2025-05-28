@@ -62,7 +62,12 @@ const StartNotify: React.FC = () => {
         const notifications = await notifee.getDisplayedNotifications();
         console.log('StartNotify - getDisplayedNotification:', notifications);
         if(notifications.length > 0){
-          badgeCountDispatch({ type: 'increment' });
+          const element = notifications[0];
+          if(element.notification.title === 'Package'){
+            badgeCountDispatch({ type: 'increment' });
+          } else{
+            console.log('fetchNotifeeOnAppOpen 제목이 Package가 아니다. 제목 =',element.notification.title);
+          }
         }
     };
 
@@ -74,7 +79,12 @@ const StartNotify: React.FC = () => {
         .then(remoteMessage => {
             if (remoteMessage) {
                 console.log('앱이 종료된 상태에서 getInitialNotification:', remoteMessage);
-                badgeCountDispatch({ type: 'increment' });
+                if(remoteMessage.data?.name === '패키지 마켓 알림'){
+                    console.log('StartNotify - 앱이 종료 상태에서 패키지 마켓 알림 도착');
+                } else {
+                  badgeCountDispatch({ type: 'increment' });
+                }
+                
             }
         });
 
@@ -88,9 +98,13 @@ const StartNotify: React.FC = () => {
 
         // 2025-03-10 11:38:54
         const subscription = notifee.onForegroundEvent(({type, detail}) => {
-          console.log('MainTab  type = ', type, detail);
+          console.log('StartNotify MainTab type = ', type, detail);
           if (type === EventType.DELIVERED) {
-            badgeCountDispatch({type: 'increment'});
+            if(detail.notification?.title === '패키지 마켓 알림'){
+              console.log('패키지 마켓 알림 도착, badge는 증가시키지 않는다.');
+            } else{
+              badgeCountDispatch({type: 'increment'});
+            }
           }
         });
 
@@ -113,7 +127,6 @@ const StartNotify: React.FC = () => {
 
     console.log('StartNotify count = ', count);
     badgeCountDispatch({'type':'increment'});
-    // setBadgeCount(prevCount => prevCount + count);
   };
 
 

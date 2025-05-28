@@ -43,34 +43,56 @@ export async function onDisplayAndroidNotification(
     }
 
     // 2025-03-04 13:45:51, messageData = {name:'kwonilgun', text:'hello'}로 구성이 되어 있다.
-    const { name} = messageData;
-    console.log('notificationServives - name', name);
+    const { name, body} = messageData;
+    console.log('onDisplayAndroidNotification - name', name);
+    if(name !== '패키지 마켓 알림'){
+        try {
+          
+            await AsyncStorage.setItem('chatFromWho', name!);
+         
+          // Create a channel (required for Android)
+          const channelId = await notifee.createChannel({
+            id: '1',
+            name: '패키지',
+            sound: 'default',
+            importance: AndroidImportance.HIGH,
+          });
 
-    try {
-      await AsyncStorage.setItem('chatFromWho', name!);
+          if (item.notification) {
+            await notifee.displayNotification({
+              title: item.notification?.title!.toString(),
+              body: item.notification?.body!.toString(),
+              android: {
+                channelId,
+                color: 'red',
+              },
+            });
+          }
+          
+        } catch (error) {
+          console.log('onAndoridDisplayNotification error', error);
+        }
+      } else{
+        console.log('패키지 마켓 알림 도착함...');
+        // Create a channel (required for Android)
+          const channelId = await notifee.createChannel({
+            id: '1',
+            name: '패키지 마켓 알림',
+            sound: 'default',
+            importance: AndroidImportance.HIGH,
+          });
 
-      // Create a channel (required for Android)
-      const channelId = await notifee.createChannel({
-        id: '1',
-        name: '패키지',
-        sound: 'default',
-        importance: AndroidImportance.HIGH,
-      });
-
-      if (item.notification) {
-        await notifee.displayNotification({
-          title: item.notification?.title!.toString(),
-          body: item.notification?.body!.toString(),
-          android: {
-            channelId,
-            color: 'red',
-          },
-        });
+          if (item.data) {
+            await notifee.displayNotification({
+              title: name,
+              body: body,
+              android: {
+                channelId,
+                color: 'red',
+              },
+            });
+          }
       }
-      
-    } catch (error) {
-      console.log('onAndoridDisplayNotification error', error);
-    }
     
 
 
@@ -105,7 +127,7 @@ export async function onIosDisplayNotification(
 
   if(item.data){
     const dataString = item.data;
-    console.log('onIosDisplayNotification - messageData', dataString);
+    console.log('onIosDisplayNotification - item.data', dataString);
 
     let messageData;
 
@@ -119,28 +141,44 @@ export async function onIosDisplayNotification(
 
 
     // 2025-03-04 13:45:51, messageData = {name:'kwonilgun', text:'hello'}로 구성이 되어 있다.
-    const { name } = messageData;
-    console.log('onIosDisplayNotification - name', name);
-    try {
-      if (messageData.name) {
-        await AsyncStorage.setItem('chatFromWho', messageData.name);
-      }
-      else{
-        console.error('messageData.name = ', messageData.name);
-      }
+    const { name, body } = messageData;
+    console.log('onIosDisplayNotification - name, body', name, body);
+    if(name !== '패키지 마켓 알림'){
+      try {
+          await AsyncStorage.setItem('chatFromWho', name!);
 
-      const title = item.notification?.title;
-      const contents = item.notification?.body;
-      console.log('notificationServices - ios - title ', title);
+        const title = item.notification?.title;
+        const contents = item.notification?.body;
+        console.log('notificationServices - ios - title ', title);
 
-      await notifee.displayNotification({
-          title: title,
-          body: contents,
-        });
-    } catch (error) {
-      console.log('onIosDisplayNotification error', error);
+        await notifee.displayNotification({
+            title: title,
+            body: contents,
+          });
+      } catch (error) {
+        console.log('onIosDisplayNotification error', error);
+      }
+    } else {
+      console.log('패키지 마켓 알림 도착함');
+      // Create a channel (required for Android)
+          const channelId = await notifee.createChannel({
+            id: '1',
+            name: '패키지 마켓 알림',
+            sound: 'default',
+            importance: AndroidImportance.HIGH,
+          });
+
+          if (item.data) {
+            await notifee.displayNotification({
+              title: name,
+              body: body,
+              android: {
+                channelId,
+                color: 'red',
+              },
+            });
+          }
     }
-
 
   }
 }

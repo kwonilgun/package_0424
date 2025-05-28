@@ -39,7 +39,7 @@ const ShippingMainScreen: React.FC<ShippingMainScreenProps> = props => {
 
   const [deliveryList, setDeliveryList] = useState<IDeliveryInfo[]>([]);
   const [deliveryFiltered, setDeliveryFilter] = useState<IDeliveryInfo[]>([]);
-  const [showUpDelivery, setShowUpDelivery] = useState<boolean>(false);
+  const [showUpDelivery, setShowUpDelivery] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchFocus, setSearchFocus] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string>('');
@@ -57,11 +57,7 @@ const ShippingMainScreen: React.FC<ShippingMainScreenProps> = props => {
         setLoading(false);
         return;
       }
-      if (props.cart.length > 0) {
-        getShippingInformationFromServer();
-      } else {
-        setLoading(false);
-      }
+      getShippingInformationFromServer();
 
       return () => {
         setShowUpDelivery(false);
@@ -223,25 +219,7 @@ const ShippingMainScreen: React.FC<ShippingMainScreenProps> = props => {
           </>
         ) : (
           <>
-            {!isLogin ? (
-              <View style={{alignItems: 'center', marginTop: 10}}>
-                <Text style={{marginBottom: RFPercentage(2)}}>
-                  장바구니 선택은 로그인이 필요합니다.
-                </Text>
-                <View style={styles.loginView}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      console.log('CartMainScreen: 로그인 필요합니다. ');
-                    }}>
-                    <View style={GlobalStyles.buttonSmall}>
-                      <Text style={GlobalStyles.buttonTextStyle}>
-                        "로그인 필요합니다"
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            ) : props.cart.length > 0 ? (
+           
               <ScrollView style={GlobalStyles.scrollView}>
                 <View
                   style={{
@@ -274,12 +252,7 @@ const ShippingMainScreen: React.FC<ShippingMainScreenProps> = props => {
                   setDeliveryList,
                 )}
               </ScrollView>
-            ) : (
-              <View style={{alignItems: 'center', marginTop: 20}}>
-                <Text style={{marginBottom: 10}}>장바구니 비어있음</Text>
-                {/* <Button title="Select Products" onPress={gotoHomeMenu} /> */}
-              </View>
-            )}
+            
           </>
         )}
       </KeyboardAvoidingView>

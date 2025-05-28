@@ -229,7 +229,7 @@ const ProductMainScreen: React.FC<ProductMainScreenProps> = props => {
       <Text style={styles.packageTitle}>{packageName}-패키지</Text>
 
     {/* 헤더 타이틀 */}
-    <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: RFPercentage(1) }}>
+    <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: RFPercentage(0.1) }}>
       <Text style={[styles.headerText, { width: RFPercentage(18), marginLeft: RFPercentage(0.5), fontWeight: 'bold' }]}>상품명</Text>
       <Text style={[styles.headerText, { width: RFPercentage(5), fontWeight: 'bold' }]}>단위</Text>
       <Text style={[styles.headerText, { width: RFPercentage(10), fontWeight: 'bold' }]}>가격</Text>
@@ -249,10 +249,10 @@ const ProductMainScreen: React.FC<ProductMainScreenProps> = props => {
           }}
         >
           <View style={{flex:1, flexDirection:'row', alignItems:'center'}}>
-              <Text style={[styles.headerText, {width:RFPercentage(18),  marginLeft: RFPercentage(0.5)}]}>{item.name}</Text>
-              <Text style={[styles.headerText, {width:RFPercentage(5)  }]}>{item.unitDesc}</Text>
-              <Text style={[styles.headerText, {width:RFPercentage(10) }]}>{item.price.toString().split('.')[0]}원</Text>
-              <Text style={[styles.headerText, {width:RFPercentage(10) }]}>{item.stock.toString()}개</Text>
+              <Text style={[styles.headerText]}>{item.name}</Text>
+              <Text style={[styles.headerText]}>{item.unitDesc}</Text>
+              <Text style={[styles.headerText]}>{item.price.toString().split('.')[0]}원</Text>
+              <Text style={[styles.headerText]}>{item.stock.toString()}개</Text>
           </View>
 
         </TouchableOpacity>
@@ -303,7 +303,8 @@ const ProductMainScreen: React.FC<ProductMainScreenProps> = props => {
         centerText={ state.user?.isAdmin ? '홈(관리자)' :  strings.HOME}
         containerStyle={{paddingHorizontal: 8}}
         isLeftView={false}
-        isRightView={isAdmin ? false : true}
+        // isRightView={isAdmin ? false : true}
+        isRightView={false }
         isRight = {false}
         rightCustomView={RightCustomComponent}
       />
@@ -356,11 +357,18 @@ const styles = StyleSheet.create({
   },
 
   headerText: {
-    // flex: 1, // 동일한 비율 유지
-    fontSize: RFPercentage(2),
+    flex: 1, // 동일한 비율 유지
+    // flexDirection:'column',
+    padding: RFPercentage(0.5),
+    fontSize: RFPercentage(1.8),
+    height:Platform.OS === 'ios' ? RFPercentage(4) : RFPercentage(4),
+    // alignSelf: 'center',
+    // alignItems: 'center',
+    // alignContent:'center',
     // color: 'black',
     // fontWeight: 'bold',
-    // borderBottomWidth: 1,
+    // borderWidth: 1,
+    // borderColor: 'red',
     textAlign: 'center',
   },
 

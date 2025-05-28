@@ -8,6 +8,7 @@ android/gradle.properties
 ios/package_0424/GoogleService-Info.plist
 ios/GoogleService-Info.plist
 
+
 #ignore 
 
 # OSX
@@ -51,6 +52,8 @@ local.properties
 node_modules/
 npm-debug.log
 yarn-error.log
+
+android/app/release/
 
 
 

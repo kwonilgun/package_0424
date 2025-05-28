@@ -43,7 +43,8 @@ import { useRoute } from '@react-navigation/native';
 // import {IMessage} from '../model/interface/IMessage';
 // import {GiftedChat, IMessage} from 'react-native-gifted-chat';
 import { IMessage } from './GiftedChat/Models';
-import GiftedChat, { GiftedChatAppend } from './GiftedChat/GiftedChat';
+import GiftedChat,{ GiftedChatAppend } from './GiftedChat/GiftedChat';
+import { Send } from './GiftedChat/Send';
 import { ImageBackground } from 'react-native';
 import imagePath from './GiftedChat/assets/constatns/imagePath';
 import GlobalStyles from '../../styles/GlobalStyles';
@@ -486,10 +487,13 @@ function handleSocketTimeout(socketData: ISocket) {
         keyExtractor={item => item.email}
         renderItem={({item}) => {
           const userName = item.email.split('@')[0];
-          console.log('renderUserList userName, sentName', userName, sentName );
           const showBadge = userName === sentName && badge > 0;
           // const showBadge =  badge > 0;
           console.log('renderUserList userName, sentName, showBadge', userName, sentName, showBadge);
+          if(showBadge === false && badge > 0){
+            setBadgeCount(0);
+            cancelNotifications();
+          }
           return (
             <TouchableOpacity
               style={styles.userItem}
@@ -529,16 +533,55 @@ function handleSocketTimeout(socketData: ISocket) {
       style={{
         flex: 1,
         marginTop: RFPercentage(1),
+        marginBottom: RFPercentage(1),
         height: 'auto',
       }}>
       <GiftedChat
+        listViewProps={{
+          style: { maxHeight: 'auto' },
+          contentContainerStyle: { paddingBottom: 20 },
+        }}
         messages={messages}
         onSend={onSend}
-        renderInputToolbar={renderInputToolbar}
+
+        // 2025-05-28 13:13:41, 
+        // renderInputToolbar={renderInputToolbar}
         user={{
           _id: selectedUser?.userId!,
           name: state.user?.email!.split('@')[0],
         }}
+
+        textInputProps={{
+          multiline: true,
+          textAlignVertical: 'top', // Android에서 텍스트 정렬 문제 해결
+          scrollEnabled: true,      // 스크롤 가능하도록 설정
+        }}
+        textInputStyle={{
+          maxHeight: 100,           // 입력창 최대 높이 설정
+          minHeight: 50,
+          maxWidth: 250,
+          // paddingTop: 10,
+          // paddingBottom: 10,
+          marginTop:RFPercentage(0.5),
+          borderColor:'blue',
+          borderWidth:1,
+          borderRadius: 10,
+        }}
+
+
+        renderSend={props => (
+        <View style={styles.sendContainer}>
+          <Send {...props}
+
+                containerStyle={{ marginRight: 10, marginBottom: 5 }} // 최소한의 여백만
+
+          >
+            <View style={styles.sendButton}>
+              <Text style={styles.sendText}>Send</Text>
+            </View>
+          </Send>
+        </View>
+      )}
       />
     </ImageBackground>
   );
@@ -610,11 +653,13 @@ function handleSocketTimeout(socketData: ISocket) {
 
   const renderInputToolbar = (props: any) => {
     return (
-      <InputToolbar
-        {...props}
-        containerStyle={styles.inputToolbar}
-        primaryStyle={styles.primaryToolbar}
-      />
+      <View style={styles.inputContainer}>
+        <InputToolbar
+          {...props}
+          containerStyle={styles.inputToolbar}
+          primaryStyle={styles.primaryToolbar}
+        />
+      </View>
     );
   };
 
@@ -650,17 +695,53 @@ function handleSocketTimeout(socketData: ISocket) {
 };
 
 const styles = StyleSheet.create({
+  sendContainer: {
+    position: 'absolute',
+    // top: -1,
+    // bottom: 0.15, // 입력창 위로 띄우기 위해 조정
+    // right: 0.1 ,  // 오른쪽 여백
+    bottom: 1,    // 입력창 기준 위로 60px
+    right: 2,     // 오른쪽에서 10px
+    zIndex: 10, // 입력창보다 위로
+    // borderWidth: 1,
+    // borderColor: 'red',
+  },
+  inputContainer: {
+    // position: 'absolute',
+    width: Platform.OS === 'ios' ? RFPercentage(2) : 'auto',
+    marginTop:RFPercentage(0.1),
+    // bottom: RFPercentage(1.5), // 입력창 위로 띄우기 위해 조정
+    // right: 10,  // 오른쪽 여백
+    // zIndex: 10, // 입력창보다 위로
+  },
+  sendButton: {
+    // marginRight: 10,
+    marginBottom: 8,
+    backgroundColor: '#2196F3',
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    // paddingVertical: 6,
+  },
+  sendText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
   inputToolbar: {
     marginTop: RFPercentage(0.5),
+    marginBottom: RFPercentage(1),
     height: RFPercentage(5),
     backgroundColor: '#f0f0f0', // 배경색 변경
     borderWidth: 1,
     borderRadius: RFPercentage(1),
-    // ㅇborderColor: 'blue', // 테두리 색상 변경
+    borderColor: 'blue', // 테두리 색상 변경
     // padding: RFPercentage(0.5),
+    // alignItems:'center',
+    // alignContent: 'center',
+    textAlign: 'center',
   },
   primaryToolbar: {
     alignItems: 'center',
+    color:'red',
   },
   headerContainer: {
     padding: 10,
@@ -670,12 +751,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     height: height * 0.06,
-    // margin: RFPercentage(1),
-    // padding: RFPercentage(2),
-    // borderWidth: 2,
-    // borderRadius: 10,
-    // borderColor: 'red',
-    // backgroundColor: 'white',
   },
   userListContainer: {
     padding: 10,
