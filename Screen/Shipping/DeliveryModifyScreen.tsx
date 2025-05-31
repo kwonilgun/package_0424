@@ -117,7 +117,7 @@ const DeliveryModifyScreen: React.FC<DeliveryModifyScreenProps> = props => {
       title: strings.CONFIRMATION,
       message: '배송지 수정',
       func: async (in_data: IDeliveryInfo) => {
-        console.log('업로드 confirm data = ', in_data);
+        console.log('DeliveryModifyScreen 업로드 confirm data = ', in_data);
         const deliveryInfo: IDeliveryInfo = in_data;
 
         const token = await getToken();
@@ -158,7 +158,7 @@ const DeliveryModifyScreen: React.FC<DeliveryModifyScreenProps> = props => {
       title: strings.CONFIRMATION,
       message: '배송지 삭제하시겠습니까?',
       func: async (in_data: IDeliveryInfo) => {
-        console.log('업로드 confirm data = ', in_data);
+        console.log('DeliveryModifyScreen 업로드 confirm data = ', in_data);
 
         const token = await getToken();
         const decoded = jwtDecode(token!) as UserFormInput;

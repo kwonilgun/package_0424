@@ -112,7 +112,7 @@ const ShippingRegisterScreen: React.FC<ShippingRegisterScreenProps> = props => {
       title: strings.CONFIRMATION,
       message: '배송지 업로드',
       func: async (in_data: IDeliveryInfo) => {
-        console.log('업로드 confirm data = ', in_data);
+        console.log('Shipping Register 업로드 confirm data = ', in_data);
         const deliveryInfo: IDeliveryInfo = in_data;
 
         const token = await getToken();

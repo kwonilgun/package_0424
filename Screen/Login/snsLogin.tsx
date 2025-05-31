@@ -157,15 +157,16 @@ export const loginBySns = (data: OAuthResponse , dispatch: React.Dispatch<AuthAc
 
   try {
     const decoded:UserFormInput = jwtDecode(data.token);
+    console.log('loginBySns decode = ', decoded);
     const userData: UserFormInput = {
           email: decoded.email,
           phoneNumber: decoded.phoneNumber,
           userId: decoded.userId === null || undefined ? '' : decoded.userId,
           isAdmin: decoded.isAdmin,
         };
-        dispatch({type: 'LOGIN', payload: userData});
+    dispatch({type: 'LOGIN', payload: userData});
   } catch (error){
-    console.error('snsLogin, decoded error');
+    console.error('snsLogin, decoded error =', error);
   }
 
 };

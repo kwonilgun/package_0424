@@ -36,6 +36,8 @@ import axios, { AxiosResponse } from 'axios';
 import { baseURL } from '../../assets/common/BaseUrl';
 import { getPromiseFcmToken } from '../Chat/notification/services';
 import { getToken } from '../../utils/getSaveToken';
+import { alertMsg } from '../../utils/alerts/alertMsg';
+import { handleKakaoLogin } from './kakaoLogin';
 
 export interface OAuthResponse {
   token : string;
@@ -66,6 +68,8 @@ const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
         // 2025-05-06 15:35:40, Google cloud에서 웹 애플리케이션을 지정해야 한다. 
             webClientId: GOOGLE_WEB_CLIENTID,
             // iosClientId: GOOGLE_IOS_CLIENT_ID,
+            offlineAccess: true, // 필요에 따라 설정
+
             scopes: ['profile', 'email'],
           });
 
@@ -219,6 +223,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
         loginBySns(response.data, dispatch);
       }
     } catch (error) {
+      alertMsg('에러', '구글 로그인 에러, 네트웍이 연결이 되어있는지 체크해보세요')
       console.log('google login error ', error);
     }
 
@@ -234,9 +239,15 @@ const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
         loginBySns(response.data, dispatch);
       }
     } catch (error) {
+      alertMsg('에러', '애플 로그인 에러, 네트웍이 연결이 되어있는지 체크해보세요')
+
       console.log('google login error ', error);
     }
 
+  };
+
+  const checkKakaoLogin = () => {
+        handleKakaoLogin(dispatch);
   };
 
   return (
@@ -314,6 +325,15 @@ const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
                       <Text style={styles.appleButtonText}>구글 로그인</Text>
                     </TouchableOpacity>
                   )}
+
+              <TouchableOpacity
+                      style={styles.appleButton} // 동일한 스타일 적용
+                      onPress={async () => {
+                        console.log('카카오 로그인  click');
+                       checkKakaoLogin();
+                      }}>
+                      <Text style={styles.appleButtonText}>카카오 로그인</Text>
+                    </TouchableOpacity>
             </View>
           </ScrollView>
 

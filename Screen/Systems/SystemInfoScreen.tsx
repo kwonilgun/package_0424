@@ -44,6 +44,7 @@ import { areJsonEqual } from '../../utils/etc/areJsonEqual';
 import { errorAlert } from '../../utils/alerts/errorAlert';
 import isEmpty from '../../utils/isEmpty';
 import { appleLogout, googleLogout } from '../Login/snsLogin';
+import { handleKakaoLogout } from '../Login/kakaoLogin';
 
 interface IUserInfo {
   nickName: string;
@@ -167,8 +168,10 @@ const SystemInfoScreen: React.FC<SystemInfoScreenProps> = props => {
       // 2025-03-28 15:15:48, googl sign out 추가
       if(Platform.OS === 'android'){
         googleLogout();
+        handleKakaoLogout();
       } else {
         appleLogout();
+        handleKakaoLogout();
       }
 
       props.navigation.navigate('UserMain', {screen: 'LoginScreen'});

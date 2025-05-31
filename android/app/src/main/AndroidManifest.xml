@@ -21,8 +21,7 @@
       android:theme="@style/Theme.SplashScreen"
       android:supportsRtl="true"
       android:usesCleartextTraffic="true"
-      
-      
+
       >
 
        <!-- android:networkSecurityConfig="@xml/network_security_config" -->
@@ -33,13 +32,10 @@
         android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
         android:launchMode="singleTask"
         android:windowSoftInputMode="adjustResize"
-        android:exported="true"
-        
-        
+        android:exported="true"        
         >
 
         <intent-filter>
-
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
@@ -50,7 +46,19 @@
             <data android:scheme="myapp" android:host="UserMain" />  
         </intent-filter>
       </activity>
-      
+      <activity
+        android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
+        android:exported="true">
+        <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+
+            <!-- Redirect URI: "kakao{NATIVE_APP_KEY}://oauth“ -->
+            <data android:host="oauth"
+                android:scheme="kakaoec04f45c3a893f856bc1f9b889538280" />
+        </intent-filter>
+      </activity>
 
       <service
           android:name="io.invertase.notifee.background.NotifeeFirebaseMessagingService"
